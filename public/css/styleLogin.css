@@ -1,0 +1,113 @@
+/* styles.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f8fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+
+.login-container, .register-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.btn{
+    color: #fff;
+    padding: 10px 20px;
+    background-color: #f9ad29;
+    border-radius: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    border-color: #a29bfe;
+    outline: none;
+}
+
+.login-button,
+.register-button {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #6c5ce7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover,
+.register-button:hover {
+    background-color: #4834d4;
+}
+
+/* Additional styles for a modern look */
+::placeholder {
+    color: #bbb;
+}
+
+.form-group .form-label {
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-group input {
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #a29bfe;
+    outline: none;
+    box-shadow: 0 0 8px rgba(163, 155, 254, 0.4);
+}
+.error_Login{
+    color:red
+}
