@@ -65,7 +65,7 @@
 
   <div class="birthday-card">
     <h2>🎉 Chúc mừng sinh nhật! 🎉</h2>
-    <p>Hôm nay là sinh nhật của:</p>
+    <p>Hôm nay ngày {{ \Carbon\Carbon::now()->format('d/m/Y') }} là sinh nhật của:</p>
     <ul class="birthday-list">
       @foreach ($employees as $employee)
         <li>{{ $employee->full_name }}</li>

@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Console\Commands\BirthdayNotification;
+use App\Console\Commands\LateArrivalViolationInWeek;
 use App\Console\Commands\SalaryCalculation;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->commands([
             SalaryCalculation::class,
-            BirthdayNotification::class
+            BirthdayNotification::class,
+            LateArrivalViolationInWeek::class
         ]);
     }
 
@@ -25,7 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Schedule $schedule): void
     {
-        $schedule->command(SalaryCalculation::class)->everyMinute();
-        $schedule->command(BirthdayNotification::class)->everyMinute();
+        $schedule->command(SalaryCalculation::class)->dailyAt('19:00')->when(function () {
+            return now()->addDay()->day == 1;
+        });
+
+        $schedule->command(BirthdayNotification::class)->dailyAt('07:00');
+
+        $schedule->command(LateArrivalViolationInWeek::class)->weeklyOn(0, '19:00');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\LateArrivalViolationNotice;
 use App\Models\Employee;
 use App\Models\salary;
 use App\Models\WorkPerformance;
@@ -9,6 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SalaryCalculation extends Command
 {
@@ -83,9 +85,15 @@ class SalaryCalculation extends Command
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
+
+                if ($attendance->total_late_hours > 1) {
+                    $type = 'Tháng này';
+                    Mail::to($employee->email)->send(new LateArrivalViolationNotice($employee, $attendance->total_late_hours, $attendance->total_late_arrivals, $type));
+                }
             }
             salary::insert($salaries);
             WorkPerformance::insert($performances);
+
 
             Log::info('Tình lương và hiệu suất làm việc cho nhân viên thành công');
             $this->info('Tính lương và hiệu suất làm việc cho nhân viên thành công');
