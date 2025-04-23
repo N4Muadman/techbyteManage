@@ -34,7 +34,7 @@ class Customer_manageController extends Controller
             });
         }
 
-        $customers = $customerQuery->paginate(10);
+        $customers = $customerQuery->OrderByDESC('created_at')->paginate(10);
 
         return view('customer.new', compact('customers'));
     }
@@ -59,7 +59,7 @@ class Customer_manageController extends Controller
             });
         }
 
-        $customers = $customerQuery->paginate(10);
+        $customers = $customerQuery->OrderByDESC('created_at')->paginate(10);
 
         return view('customer.business', compact('customers'));
     }

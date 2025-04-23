@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\TestBroadcastEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\employeeController;
 use App\Http\Controllers\attendanceController;
@@ -137,5 +138,6 @@ Route::middleware('is_admin')->prefix('admin')->group(function (){
     Route::resource('quan-ly-vai-tro', RoleManageController::class)->names('roles');
     Route::get('quyen-cua-vai-tro', [PermissionController::class, 'index'])->name('permission.index');
     Route::post('change-status-permission/{id}', [PermissionController::class, 'changeStatus'])->name('permission.change.status');
+
 });
 

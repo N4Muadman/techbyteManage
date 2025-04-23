@@ -72,45 +72,44 @@
     <div id="dialog-edit"></div>
     <div id="dialog-delete"></div>
     <div id="dialog-view-cv">
-        <div class="modal fade" id="view-cv" tabindex="-1" aria-labelledby="view-cv-Label"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="view-cv-Label">Xem thông tin ứng tuyển</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card table-card">
-                                <div class="card-body pt-3">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover text-center" id="pc-dt-simple">
-                                            <thead>
-                                                <tr>
-                                                    <th>Họ tên</th>
-                                                    <th>Số điện thoại</th>
-                                                    <th>email@gmail.com</th>
-                                                    <th>Ngày ứng tuyển</th>
-                                                    <th>Chức năng</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="cv-list">
-                                            </tbody>
-                                        </table>
+        <div class="modal fade" id="view-cv" tabindex="-1" aria-labelledby="view-cv-Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="view-cv-Label">Xem thông tin ứng tuyển</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card table-card">
+                                    <div class="card-body pt-3">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover text-center" id="pc-dt-simple">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Họ tên</th>
+                                                        <th>Số điện thoại</th>
+                                                        <th>email@gmail.com</th>
+                                                        <th>Ngày ứng tuyển</th>
+                                                        <th>Chức năng</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="cv-list">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <div class="modal fade" id="addRecruitmentModal" tabindex="-1" aria-labelledby="addRecruitmentModalLabel"
         aria-hidden="true">
@@ -149,15 +148,17 @@
                                     <input type="date" class="form-control" name="expiration_date" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="chucvu" class="form-label">Hiển thị</label>
+                                    <label class="form-label">Hiển thị</label>
                                     <select name="show" id="" class="form-select">
                                         <option value="0">Không</option>
                                         <option value="1">Có</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="chucvu" class="form-label">Mô tả công việc</label>
-                                    <textarea name="content" class="form-control recruitment-content" cols="10" rows="3"></textarea>
+                                    <label class="form-label">Mô tả công việc</label>
+                                    <div id="quill-editor" class="mb-3" style="height: 300px;">
+                                    </div>
+                                    <textarea rows="3" class="mb-3 d-none" name="content" id="quill-editor-area"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -168,18 +169,83 @@
         </div>
     </div>
 
-    <script src="https://cdn.tiny.cloud/1/qf4pnfpic603nbrs0wu0r3cyaadnairp5ngpr08muctqj041/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script>
-        function tiny(){
-            tinymce.init({
-                selector: '.recruitment-content',
-                advcode_inline: true,
-                menubar: false,
-                plugins: 'searchreplace autolink directionality visualblocks visualchars image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap linkchecker emoticons autosave fullscreen',
-                toolbar: "undo redo print spellcheckdialog formatpainter | blocks fontfamily fontsize | bold italic underline forecolor backcolor | link image | alignleft aligncenter alignright alignjustify | code",
-                height: '450px'
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            quill('quill-editor-area', '#quill-editor')
+        });
+
+        function quill(idEditorErea, idEditor) {
+            if (document.getElementById(idEditorErea)) {
+                var editor = new Quill(idEditor, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+
+                            [{
+                                'font': []
+                            }],
+                            [{
+                                'size': ['small', false, 'large', 'huge']
+                            }],
+                            [{
+                                'color': []
+                            }, {
+                                'background': []
+                            }],
+                            [{
+                                'header': [1, 2, false]
+                            }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            ['blockquote', 'code-block'],
+                            [{
+                                'list': 'ordered'
+                            }, {
+                                'list': 'bullet'
+                            }],
+                            ['link', 'image', 'video'],
+                            ['clean']
+                        ]
+                    }
+                });
+                editor.getModule('toolbar').addHandler('image', function() {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.click();
+
+                    input.onchange = function() {
+                        var file = input.files[0];
+                        if (file) {
+                            var formData = new FormData();
+                            formData.append('image', file);
+
+                            fetch('{{ config('services.recruitment_api.url') }}/api/upload-image-description', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(result => {
+                                    const url = result.url;
+                                    const range = editor.getSelection();
+                                    editor.insertEmbed(range.index, 'image',
+                                        url);
+                                })
+                                .catch(error => console.error('Error uploading image:', error));
+                        }
+                    };
+                });
+                var quillEditor = document.getElementById(idEditorErea);
+                editor.on('text-change', function() {
+                    quillEditor.value = editor.root.innerHTML;
+                });
+                quillEditor.addEventListener('input', function() {
+                    editor.root.innerHTML = quillEditor.value;
+                });
+            }
         }
 
         async function getRecruitments(position, date) {
@@ -294,9 +360,9 @@
             document.querySelectorAll('.avtar-edit').forEach((element) => {
                 element.addEventListener('click', async () => {
                     const id = element.dataset.id;
-                    if (id){
+                    if (id) {
                         const recruitment = await getRecruitmentDetails(id);
-                        if(recruitment){
+                        if (recruitment) {
                             document.getElementById('dialog-edit').innerHTML = `<div class="modal fade" id="editRecruitmentModal" tabindex="-1" aria-labelledby="addRecruitmentModalLabel"
                                                                                 aria-hidden="true">
                                                                                 <div class="modal-dialog modal-xl">
@@ -335,15 +401,18 @@
                                                                                                             <input type="date" class="form-control" name="expiration_date" value="${recruitment.expiration_date}" required>
                                                                                                         </div>
                                                                                                         <div class="mb-3">
-                                                                                                            <label for="chucvu" class="form-label">Hiển thị</label>
+                                                                                                            <label class="form-label">Hiển thị</label>
                                                                                                             <select name="show" id="" class="form-select">
                                                                                                                 <option value="0" ${recruitment.show == 0 ? 'selected' : ''}>Không</option>
                                                                                                                 <option value="1" ${recruitment.show == 1 ? 'selected' : ''}>Có</option>
                                                                                                             </select>
                                                                                                         </div>
                                                                                                         <div class="mb-3">
-                                                                                                            <label for="chucvu" class="form-label">Mô tả công việc</label>
-                                                                                                            <textarea name="content" class="form-control recruitment-content" cols="10" rows="3">${recruitment.content}</textarea>
+                                                                                                            <label class="form-label">Mô tả công việc</label>
+                                                                                                            <div id="quill-editor-edit" class="mb-3" style="height: 300px;">
+                                                                                                                ${recruitment.content}
+                                                                                                            </div>
+                                                                                                            <textarea rows="3" class="mb-3 d-none" name="content" id="quill-editor-area-edit"></textarea>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -353,14 +422,17 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>`;
-                            tiny();
-                            const modal = new bootstrap.Modal(document.getElementById('editRecruitmentModal'));
+
+                            await quill('quill-editor-area-edit', '#quill-editor-edit')
+                            const modal = new bootstrap.Modal(document.getElementById(
+                                'editRecruitmentModal'));
                             modal.show();
 
-                            document.getElementById('update-recruitment').addEventListener('submit', async () =>{
-                                event.preventDefault();
-                                await updateRecruiment(id);
-                            })
+                            document.getElementById('update-recruitment').addEventListener('submit',
+                                async () => {
+                                    event.preventDefault();
+                                    await updateRecruiment(id);
+                                })
                         }
                     }
 
@@ -368,13 +440,13 @@
             })
         }
 
-        function onClickDelete(){
+        function onClickDelete() {
             document.querySelectorAll('.avtar-delete').forEach((element) => {
-                element.addEventListener('click', async () =>{
+                element.addEventListener('click', async () => {
                     const id = element.dataset.id;
                     const positionJob = element.dataset.position;
 
-                    if(id) {
+                    if (id) {
                         document.getElementById('dialog-delete').innerHTML = `<div class="modal fade" id="delete-recruitment-modal" tabindex="-1"
                                                                                 aria-labelledby="deleteRecruitmentLabel" aria-hidden="true">
                                                                                 <div class="modal-dialog">
@@ -395,35 +467,77 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>`;
-                        const modal = new bootstrap.Modal(document.getElementById('delete-recruitment-modal'));
+                        const modal = new bootstrap.Modal(document.getElementById(
+                            'delete-recruitment-modal'));
                         modal.show();
-                        document.getElementById('btn-delete-recruitment').addEventListener('click', () =>{
-                            deleteRecruitment(id);
-                            modal.hide();
-                        })
+                        document.getElementById('btn-delete-recruitment').addEventListener('click',
+                            () => {
+                                deleteRecruitment(id);
+                                modal.hide();
+                            })
                     }
                 })
             })
         }
-        function onClickViewCV(){
-            document.querySelectorAll('.avtar-view-cv').forEach((element) => {
-                element.addEventListener('click', async () =>{
-                    const id = element.dataset.id;
-                    if (id){
-                        const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/get-cvs/${id}`, {
-                            method: "GET",
-                            headers:{
-                                'accept': 'application/json'
-                            }
-                        });
 
-                        if (!response.ok){
-                            throw new Error('Có lỗi xảy ra');
+        function onClickViewCV() {
+            document.querySelectorAll('.avtar-view-cv').forEach((element) => {
+                element.addEventListener('click', async () => {
+                    const id = element.dataset.id;
+                    if (id) {
+                        getCVOfRecuitment(id);
+                    }
+
+
+                    const modal = new bootstrap.Modal(document.getElementById('view-cv'));
+                    modal.show();
+                });
+            })
+        }
+        async function deleteCV(id, recruitmentId) {
+            try {
+                const response = await fetch(
+                    `{{ config('services.recruitment_api.url') }}/api/delete-application/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
                         }
-                        const data = await response.json();
-                        let cvListElement = '';
-                        data.cvs.forEach((item) =>{
-                            cvListElement += `
+                    });
+                if (!response.ok) {
+                    document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
+                                                                        Có lỗi xảy ra
+                                                                    </div>`;
+                    setTimeoutAlert();
+                    return;
+                }
+                await getCVOfRecuitment(recruitmentId);
+                document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
+                                                                        Xóa tin tuyển dụng thành công
+                                                                    </div>`;
+                setTimeoutAlert();
+
+            } catch (error) {
+                console.log("Có lỗi xảy ra 1", error);
+                return;
+            }
+        }
+        async function getCVOfRecuitment(id) {
+            try {
+                const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/get-cvs/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    alert('Có lỗi xảy ra');
+                    return;
+                }
+                const data = await response.json();
+                let cvListElement = '';
+                data.cvs.forEach((item) => {
+                    cvListElement += `
                                 <tr>
                                     <td>${item.full_name}</td>
                                     <td>${item.phone_number}</td>
@@ -436,16 +550,27 @@
                                         <a href="{{ config('services.recruitment_api.url') }}/api/download-cv${item.cv_path}" title="Tải xuống CV" class="avtar avtar-xs btn-link-secondary">
                                             <i class="fas fa-cloud-download-alt f-20"></i>
                                         </a>
+                                        
+                                        <a href="#" data-id=${item.id} title="Tải xuống CV" class="avtar avtar-xs btn-link-secondary btn-delete-cv">
+                                            <i class="ti ti-trash f-20"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             `;
-                        });
-                        document.getElementById('cv-list').innerHTML = cvListElement;
-                        const modal = new bootstrap.Modal(document.getElementById('view-cv'));
-                        modal.show();
-                    }
                 });
-            })
+                document.getElementById('cv-list').innerHTML = cvListElement;
+
+                document.querySelectorAll('.btn-delete-cv').forEach((element) => {
+                    element.addEventListener('click', async () => {
+                        const idCV = element.dataset.id;
+                        await deleteCV(idCV, id);
+                    });
+                })
+            } catch (error) {
+                console.log("Có lỗi xảy ra 1", error);
+                return;
+            }
+
         }
 
         function setTimeoutAlert() {
@@ -457,7 +582,7 @@
             }, 3000);
         }
         async function getRecruitmentDetails(id) {
-            try{
+            try {
                 const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
                     method: 'GET',
                     headers: {
@@ -474,14 +599,13 @@
                 const data = await response.json();
 
                 return data.recruitment;
-            }catch(error){
-                console.log("Có lỗi xảy ra 1" , error);
+            } catch (error) {
+                console.log("Có lỗi xảy ra 1", error);
                 return null;
             }
         }
         async function updateRecruiment(id) {
             try {
-                tinymce.triggerSave();
                 const form = event.target;
                 const formData = new FormData(form);
 
@@ -511,13 +635,12 @@
                 form.reset();
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editRecruitmentModal'));
                 modal.hide();
-                tinymce.editors.forEach((editor) => editor.setContent(''));
             } catch (error) {
                 alert('Có lỗi xảy ra: ' + error);
             }
         }
-        async function deleteRecruitment(id){
-            try{
+        async function deleteRecruitment(id) {
+            try {
                 const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
                     method: 'DELETE',
                     headers: {
@@ -537,13 +660,12 @@
                                                                     </div>`;
                 setTimeoutAlert();
 
-            }catch(error){
-                console.log("Có lỗi xảy ra 1" , error);
+            } catch (error) {
+                console.log("Có lỗi xảy ra 1", error);
                 return;
             }
         }
 
         getRecruitments('', '');
-        tiny();
     </script>
 @endsection

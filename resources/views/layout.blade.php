@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('adminStatic/assets/css/style.css') }}" id="main-style-link">
     <script src="{{ asset('adminStatic/assets/js/tech-stack.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('adminStatic/assets/css/style-preset.css') }}">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
@@ -51,25 +52,29 @@
         <div class="navbar-wrapper">
             <div class="m-header" style="height: 200px !important">
                 <a href="/" class="b-brand text-primary">
-                    <img src="{{ asset('adminStatic/assets/images/logo.jpg') }}" class="img-fluid" height="150px" width="250px" alt="logo">
+                    <img src="{{ asset('adminStatic/assets/images/logo.jpg') }}" class="img-fluid" height="150px"
+                        width="250px" alt="logo">
                 </a>
             </div>
             <div class="navbar-content">
                 <div class="card pc-user-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0"><img src="{{ asset('images/avatar.jpg')}}"
-                                    alt="user-image" class="user-avtar wid-45 rounded-circle"></div>
+                            <div class="flex-shrink-0"><img src="{{ asset('images/avatar.jpg') }}" alt="user-image"
+                                    class="user-avtar wid-45 rounded-circle"></div>
                             <div class="flex-grow-1 ms-3 me-2">
-                                <h6 class="mb-0">{{ Auth::user()->employee->full_name }}</h6><small>Vai trò: {{ Auth::user()->role->name }}</small>
+                                <h6 class="mb-0">{{ Auth::user()->employee->full_name }}</h6><small>Vai trò:
+                                    {{ Auth::user()->role->name }}</small>
                             </div><a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse"
                                 href="#pc_sidebar_userlink"><svg class="pc-icon">
                                     <use xlink:href="#custom-sort-outline"></use>
                                 </svg></a>
                         </div>
                         <div class="collapse pc-user-links" id="pc_sidebar_userlink">
-                            <div class="pt-3"><a href="{{ route('employee.profile.admin') }}"><i class="ti ti-user"></i> <span>Tài khoản của tôi</span></a>
-                                <a href="{{ route('logout') }}"><i class="ti ti-power"></i> <span>Logout</span></a></div>
+                            <div class="pt-3"><a href="{{ route('employee.profile.admin') }}"><i
+                                        class="ti ti-user"></i> <span>Tài khoản của tôi</span></a>
+                                <a href="{{ route('logout') }}"><i class="ti ti-power"></i> <span>Logout</span></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,7 +141,7 @@
                     <li class="dropdown pc-h-item header-user-profile"><a
                             class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                             href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
-                            aria-expanded="false"><img src="{{ asset('images/avatar.jpg')}}" alt="user-image"
+                            aria-expanded="false"><img src="{{ asset('images/avatar.jpg') }}" alt="user-image"
                                 class="user-avtar"></a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header d-flex align-items-center justify-content-between">
@@ -146,7 +151,7 @@
                                 <div class="profile-notification-scroll position-relative"
                                     style="max-height: calc(100vh - 225px)">
                                     <div class="d-flex mb-1">
-                                        <div class="flex-shrink-0"><img src="{{ asset('images/avatar.jpg')}}"
+                                        <div class="flex-shrink-0"><img src="{{ asset('images/avatar.jpg') }}"
                                                 alt="user-image" class="user-avtar wid-35"></div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1">{{ Auth::user()->employee->full_name }} 🖖</h6><span>
@@ -185,8 +190,8 @@
                                         </a>
                                     @endif
                                     <hr class="border-secondary border-opacity-50">
-                                    <div class="d-grid mb-3"><a class="btn btn-primary" href="{{ route('logout') }}"><svg
-                                                class="pc-icon me-2">
+                                    <div class="d-grid mb-3"><a class="btn btn-primary"
+                                            href="{{ route('logout') }}"><svg class="pc-icon me-2">
                                             </svg>Logout</a>
                                     </div>
                                 </div>
@@ -204,33 +209,31 @@
         </div>
     </div>
     <div class="modal fade" id="CheckoutModal" tabindex="-1" aria-labelledby="CheckoutModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="CheckoutModalLabel">Xác nhận checkout</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Bạn có chắc chắn muốn checkout không?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form action="{{ route('checkout') }}" method="post" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-danger">Checkout</button>
-                        </form>
-                    </div>
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CheckoutModalLabel">Xác nhận checkout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn checkout không?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form action="{{ route('checkout') }}" method="post" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Checkout</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     <footer class="pc-footer">
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col my-1">
-                    <p class="m-0"><a
-                            href="https://idai.vn/" target="_blank">Idai &#9829;</a></p>
+                    <p class="m-0"><a href="https://idai.vn/" target="_blank">Idai &#9829;</a></p>
                 </div>
                 {{-- <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
@@ -308,25 +311,26 @@
                         <h6 class="mb-1">Chủ đề tùy chỉnh</h6>
                         <p class="text-muted text-sm">Chọn màu chủ đề chính của bạn</p>
                         <div class="theme-color preset-color">
-                            <a href="#!" data-bs-toggle="tooltip" title="Màu xanh" class="active" data-value="preset-1"><i class="ti ti-checks"></i></a>
+                            <a href="#!" data-bs-toggle="tooltip" title="Màu xanh" class="active"
+                                data-value="preset-1"><i class="ti ti-checks"></i></a>
                             <a href="#!" data-bs-toggle="tooltip" title="Màu chàm" data-value="preset-2"><i
                                     class="ti ti-checks"></i></a>
-                            <a href="#!" data-bs-toggle="tooltip"
-                                title="Màu tím" data-value="preset-3"><i class="ti ti-checks"></i></a>
+                            <a href="#!" data-bs-toggle="tooltip" title="Màu tím" data-value="preset-3"><i
+                                    class="ti ti-checks"></i></a>
                             <a href="#!" data-bs-toggle="tooltip" title="Màu hồng" data-value="preset-4"><i
                                     class="ti ti-checks"></i></a>
-                            <a href="#!" data-bs-toggle="tooltip"
-                                title="Màu đỏ" data-value="preset-5"><i class="ti ti-checks"></i></a>
+                            <a href="#!" data-bs-toggle="tooltip" title="Màu đỏ" data-value="preset-5"><i
+                                    class="ti ti-checks"></i></a>
                             <a href="#!" data-bs-toggle="tooltip" title="Màu cam" data-value="preset-6"><i
                                     class="ti ti-checks"></i></a>
-                            <a href="#!" data-bs-toggle="tooltip"
-                                title="Màu vàng" data-value="preset-7"><i class="ti ti-checks"></i></a>
+                            <a href="#!" data-bs-toggle="tooltip" title="Màu vàng" data-value="preset-7"><i
+                                    class="ti ti-checks"></i></a>
                             <a href="#!" data-bs-toggle="tooltip" title="Màu xanh lá" data-value="preset-8"><i
                                     class="ti ti-checks"></i></a>
-                            <a href="#!" data-bs-toggle="tooltip"
-                                title="Màu xanh lục" data-value="preset-9"><i class="ti ti-checks"></i></a>
-                            <a href="#!" data-bs-toggle="tooltip" title="Màu xanh ngọc" data-value="preset-10"><i
-                                    class="ti ti-checks"></i>
+                            <a href="#!" data-bs-toggle="tooltip" title="Màu xanh lục" data-value="preset-9"><i
+                                    class="ti ti-checks"></i></a>
+                            <a href="#!" data-bs-toggle="tooltip" title="Màu xanh ngọc"
+                                data-value="preset-10"><i class="ti ti-checks"></i>
                             </a>
                         </div>
                     </li>
@@ -334,7 +338,8 @@
                         <h6 class="mb-1">Bố cục chủ đề</h6>
                         <p class="text-muted text-sm">Chọn bố cục của bạn</p>
                         <div class="theme-main-layout d-flex align-center gap-1 w-100"><a href="#!"
-                                data-bs-toggle="tooltip" title="Thẳng đứng" class="active" data-value="vertical"><img
+                                data-bs-toggle="tooltip" title="Thẳng đứng" class="active"
+                                data-value="vertical"><img
                                     src="https://ableproadmin.com/assets/images/customizer/caption-on.svg"
                                     alt="img" class="img-fluid"> </a><a href="#!" data-bs-toggle="tooltip"
                                 title="Nằm ngang" data-value="horizontal"><img
@@ -415,15 +420,16 @@
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="d-grid"><button class="btn btn-light-danger" id="layoutreset">Đặt lại bố cục</button>
+                        <div class="d-grid"><button class="btn btn-light-danger" id="layoutreset">Đặt lại bố
+                                cục</button>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
     </div><!-- [Page Specific JS] start -->
-    <script data-cfasync="false" src="{{ asset('adminStatic/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js') }}">
-    </script>
+    <script data-cfasync="false"
+        src="{{ asset('adminStatic/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js') }}"></script>
     <script src="{{ asset('adminStatic/assets/js/plugins/apexcharts.min.js') }}"></script>
     {{-- <script src="{{ asset('adminStatic/assets/js/pages/dashboard-analytics.js') }}"></script> --}}
     <script src="{{ asset('adminStatic/assets/js/plugins/popper.min.js') }}"></script>
@@ -434,6 +440,9 @@
     <script src="{{ asset('adminStatic/assets/js/plugins/feather.min.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <!-- Laravel Echo (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.iife.js"></script>
     <script>
         layout_change('light');
         change_box_container('false');
@@ -441,12 +450,12 @@
         layout_rtl_change('false');
         preset_change('preset-1');
         main_layout_change('vertical');
-        setTimeout(function(){
+        setTimeout(function() {
             const alert = document.getElementsByClassName("alert")[0];
-            if(alert){
+            if (alert) {
                 alert.classList.add("d-none");
             }
-        }, 3000 );
+        }, 3000);
         $(document).ready(function() {
             $('.money').inputmask('currency', {
                 prefix: '',

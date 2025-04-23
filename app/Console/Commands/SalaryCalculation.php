@@ -48,7 +48,7 @@ class SalaryCalculation extends Command
             ->get();
 
         $employeeIds = $attendances->pluck('employee_id')->toArray();
-        $employees = Employee::whereIn('id', $employeeIds)->get()->keyBy('id');
+        $employees = Employee::whereIn('id', $employeeIds)->whereNull('end_date')->get()->keyBy('id');
 
         try {
             $salaries = [];
