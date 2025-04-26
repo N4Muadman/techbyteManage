@@ -208,6 +208,10 @@
                         ]
                     }
                 });
+
+                var quillEditor = document.getElementById(idEditorErea);
+                editor.root.innerHTML = quillEditor.value || '';
+
                 editor.getModule('toolbar').addHandler('image', function() {
                     var input = document.createElement('input');
                     input.setAttribute('type', 'file');
@@ -238,7 +242,7 @@
                         }
                     };
                 });
-                var quillEditor = document.getElementById(idEditorErea);
+
                 editor.on('text-change', function() {
                     quillEditor.value = editor.root.innerHTML;
                 });
@@ -410,9 +414,10 @@
                                                                                                         <div class="mb-3">
                                                                                                             <label class="form-label">Mô tả công việc</label>
                                                                                                             <div id="quill-editor-edit" class="mb-3" style="height: 300px;">
-                                                                                                                ${recruitment.content}
+                                                                                                                
                                                                                                             </div>
-                                                                                                            <textarea rows="3" class="mb-3 d-none" name="content" id="quill-editor-area-edit"></textarea>
+                                                                                                            <textarea rows="3" class="mb-3 d-none" name="content" id="quill-editor-area-edit">
+                                                                                                                ${recruitment.content}</textarea>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
