@@ -19,7 +19,8 @@ class RolePagePermissionSeeder extends Seeder
         DB::table('page_permissions')->truncate();
         DB::table('pages')->truncate();
         DB::table('permissions')->truncate();
-        
+        DB::table('role')->truncate();
+
         DB::transaction(function () {
             $permissions = [
                 [
@@ -127,7 +128,7 @@ class RolePagePermissionSeeder extends Seeder
                     'id' => '12',
                     'name' => 'Quản lý dự án',
                     'description' => '',
-                    'permission' => [1,2,3,4]
+                    'permission' => [1, 2, 3, 4]
                 ],
                 [
                     'id' => '13',
@@ -160,12 +161,12 @@ class RolePagePermissionSeeder extends Seeder
                 }
             }
 
-            DB::insert(config('role_default'));
+            DB::table('role')->insert(config('role_default'));
 
             $roles = role::where('id', '!=', 1)->get();
             $page_permission_ids = DB::table('page_permissions')->pluck('id')->toArray();
 
-            $data_page_permissions = array_map(function($id) {
+            $data_page_permissions = array_map(function ($id) {
                 return [
                     'page_permission_id' => $id
                 ];
