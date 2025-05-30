@@ -172,13 +172,13 @@ class attendanceController extends Controller
     public function checkin(Request $request)
     {
         $user = Auth::user();
-        $ip = $request->ip();
+        // $ip = $request->ip();
 
-        $checkIpWithBranch = Branch::where('id', Auth::user()->employee->branch_id)->where('address_ip', $ip)->first();
+        // $checkIpWithBranch = Branch::where('id', Auth::user()->employee->branch_id)->where('address_ip', $ip)->first();
 
-        if(!$checkIpWithBranch){
-            return redirect()->back()->with('error', 'Bạn không thể checkin vì chưa sử dụng mạng của công ty');
-        }
+        // if(!$checkIpWithBranch){
+        //     return redirect()->back()->with('error', 'Bạn không thể checkin vì chưa sử dụng mạng của công ty');
+        // }
 
         $checkCheckIn = attendance::where('employee_id', $user->employee_id)->whereNull('check_out')->orderBy('id', 'desc')->first();
 
@@ -200,13 +200,13 @@ class attendanceController extends Controller
 
     public function checkout(){
         $employeeId = Auth::user()->employee_id;
-        $ip = request()->ip();
+        // $ip = request()->ip();
 
-        $checkIpWithBranch = Branch::where('id', Auth::user()->employee->branch_id)->where('address_ip', $ip)->first();
+        // $checkIpWithBranch = Branch::where('id', Auth::user()->employee->branch_id)->where('address_ip', $ip)->first();
 
-        if(!$checkIpWithBranch){
-            return redirect()->back()->with('error', 'Bạn không thể check-out vì chưa sử dụng mạng của công ty');
-        }
+        // if(!$checkIpWithBranch){
+        //     return redirect()->back()->with('error', 'Bạn không thể check-out vì chưa sử dụng mạng của công ty');
+        // }
 
         $checkCheckIn = attendance::where('employee_id', $employeeId)->whereNull('check_out')->orderBy('id', 'desc')->first();
 
