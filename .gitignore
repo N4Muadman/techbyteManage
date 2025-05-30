@@ -1,22 +1,38 @@
-/.phpunit.cache
+# Laravel directories
+/vendor
 /node_modules
+/storage/*.key
+/public/storage
 /public/build
 /public/hot
-/public/storage
 /public/feedbacks
-/storage/*.key
-/vendor
+
+# Environment files
 .env
 .env.backup
 .env.production
-.phpactor.json
+
+# Laravel cache
+/.phpunit.cache
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
+
+# Composer & PHP related
 auth.json
+.phpactor.json
+
+# Log files
 npm-debug.log
 yarn-error.log
-/.fleet
+
+# IDEs and Editors
 /.idea
 /.vscode
 /.zed
+/.fleet
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# Apache config
+/.htaccess

@@ -114,6 +114,10 @@ class RoleManageController extends Controller
         if (!$role){
             return redirect()->back()->with('error', 'Vai trò không tồn tại');
         }
+        
+        if (in_array($role->id, array_column(config('role_default'), 'id'))){
+            return redirect()->back()->with('error', 'Không thể xóa vai trò mặc định');
+        }
 
         try {
             DB::beginTransaction();

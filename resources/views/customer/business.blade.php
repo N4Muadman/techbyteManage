@@ -57,7 +57,7 @@
                                         <th>Nhân viên tư vấn</th>
                                     @endif
                                     <th>Chức năng</th>
-                                    @if (Auth::user()->hasPermissionOnPage('10', '11'))
+                                    @if (Auth::user()->hasPermissionOnPage('8', '10'))
                                         <th>Phản hồi</th>
                                     @endif
                                 </tr>
@@ -78,21 +78,21 @@
                                         <td>
                                             <a href="#" class="avtar avtar-add-contract avtar-xs btn-link-secondary"
                                                 data-id="{{ $it->id }}" data-name="{{ $it->full_name }}"><i class="fas fa-plus" title="Thêm hợp đồng mới"></i></a>
-                                            @if (Auth::user()->hasPermissionOnPage('5', '11'))
+                                            @if (Auth::user()->hasPermissionOnPage('3', '10'))
                                                 <a href="#" class="avtar avtar-show avtar-xs btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-eye"></i></a>
                                             @endif
-                                            @if (Auth::user()->hasPermissionOnPage('4', '11'))
+                                            @if (Auth::user()->hasPermissionOnPage('2', '10'))
                                                 <a href="#" class="avtar avtar-edit avtar-xs btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-user-edit"></i></a>
                                             @endif
-                                            @if (Auth::user()->hasPermissionOnPage('6', '11'))
+                                            @if (Auth::user()->hasPermissionOnPage('4', '10'))
                                                 <a href="#" class="avtar avtar-delete avtar-xs btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-trash"></i></a>
                                             @endif
                                         </td>
                                         <td>
-                                            @if (Auth::user()->hasPermissionOnPage('10', '11'))
+                                            @if (Auth::user()->hasPermissionOnPage('8', '10'))
                                                 <a href="#" class="avtar avtar-lg avtar-feedback btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i
                                                         class="fab fa-facebook-messenger"></i></a>

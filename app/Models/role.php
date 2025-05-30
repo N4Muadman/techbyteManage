@@ -27,6 +27,10 @@ class role extends Model
         return $this->belongsToMany(PagePermission::class, 'role_page_permissions');
     }
 
+    public function RolePagePermission(){
+        return $this->hasMany(RolePagePermission::class);
+    }
+
     public function permissions()
     {
         return $this->hasManyThrough(Permission::class, PagePermission::class);

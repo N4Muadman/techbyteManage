@@ -43,13 +43,19 @@
                 <input type="text" class="form-control" placeholder="Tìm kiếm theo chức vụ"
                     value="{{ request('position') }}" name="position" id="">
             </div>
+            
             <div class="col-6 col-sm-2 mb-2">
-                <input type="month" class="form-control" placeholder="Tìm kiếm theo ngay" value="{{ request('date') }}"
-                    name="date" id="">
+                <input type="month" class="form-control" value="{{ request('start_month') }}"
+                    name="start_month" id="">
             </div>
-            <div class="col-12 d-flex d-sm-block justify-content-between col-sm-3">
+            <div class="col-6 col-sm-2 mb-2">
+                <input type="month" class="form-control" value="{{ request('end_month') }}"
+                    name="end_month" id="">
+            </div>
+
+            <div class="col-12 d-flex d-sm-block justify-content-between col-sm-2">
                 <button type="submit" class="btn btn-success  me-3">Tìm kiếm</button>
-                <a href="{{ route('salary.export.admin', ['full_name' => request('full_name'), 'branch' => request('branch'), 'position' => request('position'), 'date' => request('date')]) }}"
+                <a href="{{ route('salary.export.admin', request()->query()) }}"
                     class="btn btn-danger">
                     Báo cáo <i class="ms-2 fas fa-file-export"></i>
                 </a>
@@ -74,9 +80,7 @@
                                     <th>Khoản trừ</th>
                                     <th>Thời gian tính lương</th>
                                     <th>Tổng lương</th>
-                                    @if (Auth::user()->hasPermissionOnPage('3', '2'))
-                                        <th>Chức năng</th>
-                                    @endif
+                                    <th>Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,40 +93,33 @@
                                         <td>{{ $it->employee?->full_name }}</td>
                                         <td>{{ $it->employee?->branch?->branch_name }}</td>
                                         <td>{{ $it->employee?->position }}</td>
-                                        <td>{{ number_format($it->base_salary, 0, '.', ',') . ' đ' }}</td>
-                                        <td>{{ number_format($it->allowance, 0, '.', ',') . ' đ' }}</td>
-                                        <td>{{ number_format($it->bonus, 0, '.', ',') . ' đ' }}</td>
-                                        <td>{{ number_format($it->deduction, 0, '.', ',') . ' đ' }}</td>
+                                        <td>{{ number_format($it->base_salary) . ' đ' }}</td>
+                                        <td>{{ number_format($it->allowance) . ' đ' }}</td>
+                                        <td>{{ number_format($it->bonus) . ' đ' }}</td>
+                                        <td>{{ number_format($it->deduction) . ' đ' }}</td>
                                         <td>{{ $it->salary_date }}</td>
-                                        <td>{{ number_format($total_salary, 0, '.', ',') . ' đ' }}</td>
+                                        <td>{{ number_format($total_salary) . ' đ' }}</td>
                                         <td>
-                                            @if (Auth::user()->hasPermissionOnPage('5', '2'))
+                                            @if (Auth::user()->hasPermissionOnPage('3', '2'))
                                                 <a href="#" data-bs-toggle="modal"
                                                     data-bs-target="#info-salary-{{ $it->id }}"
                                                     class="employee-detail avtar avtar-xs btn-link-secondary"><i
                                                         class="ti ti-info-circle f-18"></i></a>
                                             @endif
 
-                                            @if (Auth::user()->hasPermissionOnPage('4', '2'))
+                                            @if (Auth::user()->hasPermissionOnPage('2', '2'))
                                                 <a href="#" data-bs-toggle="modal"
                                                     data-bs-target="#edit-salary-{{ $it->id }}"
                                                     class="employee-edit avtar avtar-xs btn-link-secondary"><i
                                                         class="ti ti-edit f-18"></i></a>
                                             @endif
-
-                                            {{-- @if (Auth::user()->hasPermissionOnPage('6', '1'))
-                                                <a href="#" data-bs-toggle="modal"
-                                                    class="avtar avtar-xs btn-link-secondary"
-                                                    data-bs-target="#delete-salary-{{ $it->id }}"><i
-                                                        class="ti ti-trash f-18"></i></a>
-                                            @endif --}}
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $salaries->links('pagination::bootstrap-5') }}
+                            {{ $salaries->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>
@@ -205,22 +202,22 @@
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Lương cơ bản:</p>
                                                 <span
-                                                    class="fw-bold">{{ number_format($it->base_salary, 0, '.', ',') . ' đ' }}</span>
+                                                    class="fw-bold">{{ number_format($it->base_salary) . ' đ' }}</span>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Phụ cấp:</p>
                                                 <span
-                                                    class="fw-bold">{{ number_format($it->allowance, 0, '.', ',') . ' đ' }}</span>
+                                                    class="fw-bold">{{ number_format($it->allowance) . ' đ' }}</span>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Thưởng:</p>
                                                 <span
-                                                    class="fw-bold">{{ number_format($it->bonus, 0, '.', ',') . ' đ' }}</span>
+                                                    class="fw-bold">{{ number_format($it->bonus) . ' đ' }}</span>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Khoản trừ:</p>
                                                 <span
-                                                    class="fw-bold">{{ number_format($it->deduction, 0, '.', ',') . ' đ' }}</span>
+                                                    class="fw-bold">{{ number_format($it->deduction) . ' đ' }}</span>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Thời gian tính lương:</p>
@@ -229,7 +226,7 @@
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Tổng tiền lương:</p>
                                                 <span
-                                                    class="fw-bold">{{ number_format($total_salary, 0, '.', ',') . ' đ' }}</span>
+                                                    class="fw-bold">{{ number_format($total_salary) . ' đ' }}</span>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Tổng giờ làm:</p>
@@ -237,13 +234,13 @@
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Tổng số lần đi muốn:</p>
-                                                <span
-                                                    class="fw-bold text-danger">{{ $it->total_late_arrivals ?? 0 }}
+                                                <span class="fw-bold text-danger">{{ $it->total_late_arrivals ?? 0 }}
                                                     lần</span>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <p class="text-worker-profile">Tổng số giờ đi muộn:</p>
-                                                <span class="fw-bold text-danger">{{ formatHour($it->total_late_hours) }}</span>
+                                                <span
+                                                    class="fw-bold text-danger">{{ formatHour($it->total_late_hours) }}</span>
                                             </div>
                                         </div>
                                     </div>

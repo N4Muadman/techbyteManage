@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckAccess
@@ -14,16 +15,14 @@ class CheckAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $pageId = null, ...$permissionIds): Response
     {
-        $path = $request->path();
+        if (!is_array($permissionIds)) {
+            $permissionIds = $permissionIds ? explode(',', $permissionIds) : [];
+        }
 
-        $segments = explode('/', $path);
-
-        $basePath = implode('/', array_slice($segments, 0, 2));
-
-        if(!Auth::user()->hasPermissionOnPath('1', '/' . $basePath)){
-            return redirect('no-access');
+        if (!Auth::user()->canAccessPage($permissionIds, $pageId)) {
+            return redirect('/no-access');
         }
 
         return $next($request);

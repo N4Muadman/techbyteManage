@@ -15,7 +15,7 @@
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách hỗ trợ khiếu nại</h2>
                         @auth
-                            @if (Auth::user()->hasPermissionOnPage('3', '14'))
+                            @if (Auth::user()->hasPermissionOnPage('1', '14'))
                                 <button data-bs-toggle="modal" data-bs-target="#addComplaintModal"
                                     class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add
                                     new
@@ -45,7 +45,7 @@
                                     <th>Loại yêu cầu</th>
                                     <th>Mô tả</th>
                                     <th>Trạng thái</th>
-                                    @if (Auth::user()->hasPermissionOnPage('8', '14'))
+                                    @if (Auth::user()->hasPermissionOnPage('6', '14'))
                                         <th>Phê duyệt</th>
                                     @endif
                                 </tr>
@@ -61,7 +61,7 @@
                                         <td data-label="Mô tả">{{ $it->description }}</td>
                                         @if ($it->status == 0)
                                             <td data-label="Trạng thái" class="text-danger">Đang chờ phê duyệt</td>
-                                            @if (Auth::user()->hasPermissionOnPage('8', '14'))
+                                            @if (Auth::user()->hasPermissionOnPage('6', '14'))
                                                 <td data-label="Phê duyệt" class=" text-center">
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#approveComplaint-{{ $it->id }}"><i
@@ -70,7 +70,7 @@
                                             @endif
                                         @else
                                             <td data-label="Trạng thái" class="text-success">Đã được phê duyệt</td>
-                                            @if (Auth::user()->hasPermissionOnPage('8', '14'))
+                                            @if (Auth::user()->hasPermissionOnPage('6', '14'))
                                                 <td data-label="Phê duyệt" class=" text-center"><i class="fas fa-toggle-on"
                                                         style="font-size: 28px; color:#009879"></i></td>
                                             @endif

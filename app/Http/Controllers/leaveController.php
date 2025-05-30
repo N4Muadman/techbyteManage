@@ -52,7 +52,7 @@ class leaveController extends Controller
                 'employee_id' => $leave->employee_id,
                 'name' => "Nghỉ phép",
                 'url' => route('leave.index.admin'),
-                'discription' => "Nghỉ phép của bạn đã được phê duyệt,Từ ngày: " .$leave->start_date ." đến ngày: ".$leave->end_date,
+                'description' => "Nghỉ phép của bạn đã được phê duyệt,Từ ngày: " .$leave->start_date ." đến ngày: ".$leave->end_date,
             ]);
             return redirect()->route('leave.index.admin')->with(['success' => 'Phê duyệt nghỉ phép thành công']);
         }
@@ -70,7 +70,7 @@ class leaveController extends Controller
                 'employee_id' => $leave->employee_id,
                 'name' => "Nghỉ phép",
                 'url' => route('leave.index.admin'),
-                'discription' => "Nghỉ phép của bạn đã bị từ chối",
+                'description' => "Nghỉ phép của bạn đã bị từ chối",
             ]);
             return redirect()->route('leave.index.admin')->with(['success' => 'Từ chối nghỉ phép thành công']);
         }
@@ -83,7 +83,7 @@ class leaveController extends Controller
             'employee_id' => $user->employee_id,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'reason_discription' => $request->reason_discription,
+            'reason_description' => $request->reason_description,
             'leave_status' => 0,
         ]);
         return redirect()->back()->with(['success' => 'Đăng kí nghỉ phép thành công']);

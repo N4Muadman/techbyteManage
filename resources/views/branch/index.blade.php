@@ -15,9 +15,9 @@
                 </div>
                 <div class="col-md-12">
                     <div class="page-header-title">
-                        <h2 class="mb-2">Danh sách chi nhanh</h2>
+                        <h2 class="mb-2">Danh sách chi nhánh</h2>
 
-                        @if (Auth::user()->hasPermissionOnPage('3', '3'))
+                        @if (Auth::user()->hasPermissionOnPage('1', '3'))
                             <button data-bs-toggle="modal" data-bs-target="#addBranchModal"
                                 class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add new
                                 item</button>
@@ -58,17 +58,16 @@
                                             <td data-label="Trạng thái" class="text-success">Đang hoạt động</td>
                                         @endif
                                         <td data-label="Chức năng">
-                                            @if (Auth::user()->hasPermissionOnPage('4', '3'))
+                                            @if (Auth::user()->hasPermissionOnPage('2', '3'))
                                                 <a href="#" style="margin-right: 10px" data-bs-toggle="modal"
                                                 data-bs-target="#editBranchModal-{{ $it->id }}"><i
                                                     class="fas fa-edit"></i></a>
                                             @endif
-                                            @if (Auth::user()->hasPermissionOnPage('6', '3'))
+                                            @if (Auth::user()->hasPermissionOnPage('4', '3'))
                                                 <a href="#" data-bs-toggle="modal"
                                                 data-bs-target="#deleteBranchModal-{{ $it->id }}"><i
                                                     class="ti ti-trash f-20"></i></a>
                                             @endif
-
 
                                         </td>
                                     </tr>

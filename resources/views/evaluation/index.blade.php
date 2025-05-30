@@ -39,13 +39,17 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-6 col-sm-3 mb-2">
+            <div class="col-6 col-sm-2 mb-2">
                 <input type="text" class="form-control" placeholder="Tìm kiếm theo chức vụ"
                     value="{{ request('position') }}" name="position" id="">
             </div>
             <div class="col-6 col-sm-2 mb-2">
-                <input type="month" class="form-control" placeholder="Tìm kiếm theo tháng" value="{{ request('month') }}"
-                    name="month" id="">
+                <input type="month" class="form-control" value="{{ request('start_month') }}" name="start_month"
+                    id="">
+            </div>
+            <div class="col-6 col-sm-2 mb-2">
+                <input type="month" class="form-control" value="{{ request('end_month') }}" name="end_month"
+                    id="">
             </div>
             <div class="col-12 col-sm-2">
                 <button type="submit" class="btn btn-success  me-3">Tìm kiếm</button>
@@ -93,10 +97,10 @@
                                         <td class="text-danger">{{ $it->total_late_arrivals ?? 0 }}</td>
                                         <td class="text-danger">{{ formatHour($it->total_late_hours) }}</td>
                                         <td>{{ $it->total_project ?? 0 }}</td>
-                                        <td>{{ number_format($it->total_revenue, 0, '.', ',') . ' đ' }}</td>
+                                        <td>{{ number_format($it->total_revenue) . ' đ' }}</td>
                                         @if (!$it->performance_review)
                                             <td>
-                                                @if (Auth::user()->hasPermissionOnPage('3', '8'))
+                                                @if (Auth::user()->hasPermissionOnPage('1', '7'))
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#addEvaluation-{{ $it->id }}"><i
                                                             class="fas fa-plus"></i></a>
@@ -104,15 +108,15 @@
                                             </td>
                                         @else
                                             <td>
-                                                @if (Auth::user()->hasPermissionOnPage('5', '8'))
+                                                @if (Auth::user()->hasPermissionOnPage('3', '7'))
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#detailEvaluation-{{ $it->id }}"><i
-                                                            class="fas fa-info-circle me-5"></i></a>
+                                                            class="fas fa-info-circle"></i></a>
                                                 @endif
-                                                @if (Auth::user()->hasPermissionOnPage('4', '8'))
+                                                @if (Auth::user()->hasPermissionOnPage('2', '7'))
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#editEvaluation-{{ $it->id }}"><i
-                                                            class="ti ti-edit f-18"></i></i></a>
+                                                            class="ti ti-edit f-18 ms-5"></i></i></a>
                                                 @endif
                                             </td>
                                         @endif
@@ -144,21 +148,8 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="mb-3">
-                                            <input type="text" class="form-control" value="{{ $item->id }}"
-                                                name="work_performance_id" hidden>
-                                        </div>
-                                        <div class="mb-3 position-relative">
-                                            <label class="form-label">Tổng dự án</label>
-                                            <input type="number" class="form-control" placeholder="Nhập tổng số dự án"
-                                                name="total_project" value="{{ $item->total_project }}">
-                                        </div>
-                                        <div class="mb-3 position-relative">
-                                            <label class="form-label">Tổng doanh thu</label>
-                                            <input type="text" class="form-control money"
-                                                value="{{ $item->total_revenue }}" placeholder="Nhập tổng số doanh thu"
-                                                name="total_revenue">
-                                        </div>
+                                        <input type="text" class="form-control" value="{{ $item->id }}"
+                                            name="work_performance_id" hidden>
                                         <div class="mb-3 position-relative">
                                             <label class="form-label">Điểm thời gian làm việc</label>
                                             <input type="number" min="0" max="100" class="form-control"
@@ -216,21 +207,8 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="mb-3">
-                                            <input type="text" class="form-control" value="{{ $item->id }}"
-                                                name="work_performance_id" hidden>
-                                        </div>
-                                        <div class="mb-3 position-relative">
-                                            <label class="form-label">Tổng dự án</label>
-                                            <input type="number" class="form-control" placeholder="Nhập tổng số dự án"
-                                                name="total_project" value="{{ $item->total_project }}">
-                                        </div>
-                                        <div class="mb-3 position-relative">
-                                            <label class="form-label">Tổng doanh thu</label>
-                                            <input type="text" class="form-control money"
-                                                value="{{ $item->total_revenue }}" placeholder="Nhập tổng số doanh thu"
-                                                name="total_revenue">
-                                        </div>
+                                        <input type="text" class="form-control" value="{{ $item->id }}"
+                                            name="work_performance_id" hidden>
                                         <div class="mb-3 position-relative">
                                             <label class="form-label">Điểm thời gian làm việc</label>
                                             <input type="number" min="0" max="100" class="form-control"

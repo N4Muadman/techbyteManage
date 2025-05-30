@@ -44,7 +44,7 @@ class Support_complaintController extends Controller
             notification::create([
                 'role_id' => 1,
                 'name' => "Yêu cầu hỗ trợ / khiếu nại",
-                'discription' => "Nhân viên ".$complaint->employee->full_name ." chi nhánh " .$complaint->employee->branch->branch_name
+                'description' => "Nhân viên ".$complaint->employee->full_name ." chi nhánh " .$complaint->employee->branch->branch_name
                  ." đã gửi yêu cầu hỗ trợ khiếu nại về " .$complaint->complaint_type,
             ]);
 
@@ -64,7 +64,7 @@ class Support_complaintController extends Controller
                 'role_id' => 4,
                 'employee_id' => $complaint->employee_id,
                 'name' => "Yêu cầu hỗ trợ / khiếu nại",
-                'discription' => "Yêu cầu hỗ trợ / khiếu nại của bạn đã được phê duyệt",
+                'description' => "Yêu cầu hỗ trợ / khiếu nại của bạn đã được phê duyệt",
             ]);
 
             return redirect()->back();

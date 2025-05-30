@@ -155,7 +155,7 @@ class attendanceController extends Controller
                 'employee_id' => $attendance->employee_id,
                 'name' => "Chấm công",
                 'url' => route('attendance.index.admin'),
-                'discription' => "Giờ làm việc ngày " .$attendance->date ." của bạn đã được phê duyệt",
+                'description' => "Giờ làm việc ngày " .$attendance->date ." của bạn đã được phê duyệt",
             ]);
             return redirect()->route('attendance.index.admin')->with('success','phê duyệt thành công');
         } else return redirect()->route('attendance.index.admin')->with('error','phê duyệt không thành công');

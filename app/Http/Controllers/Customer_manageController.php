@@ -19,7 +19,7 @@ class Customer_manageController extends Controller
         $customerQuery = Customer::with('employee')->where('type', 0);
 
         if($user->role_id == 5){
-            $customerQuery->where('employee_id', $user->employee->id);
+            $customerQuery->where('employee_id', $user->employee_id);
         }
 
         if($request->name){
@@ -161,8 +161,6 @@ class Customer_manageController extends Controller
             DB::beginTransaction();
             $contract_value = preg_replace('/\D/', '', $request->contract_value);
             $advance_money = preg_replace('/\D/', '', $request->advance_money);
-
-            Log::info($advance_money . $contract_value);
 
             Contract::create([
                 'customer_id' => $customer->id,

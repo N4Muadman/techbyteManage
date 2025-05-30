@@ -17,7 +17,7 @@
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách nghỉ phép</h2>
                         @auth
-                            @if (Auth::user()->hasPermissionOnPage('3', '5'))
+                            @if (Auth::user()->hasPermissionOnPage('1', '5'))
                                 <button data-bs-toggle="modal" data-bs-target="#addLeaveModal"
                                     class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add
                                     new
@@ -102,10 +102,10 @@
                                         <td data-label="Chức vụ">{{ $it->employee->position }}</td>
                                         <td data-label="Bắt đầu nghỉ">{{ $it->start_date }}</td>
                                         <td data-label="Kết thúc nghỉ">{{ $it->end_date }}</td>
-                                        <td data-label="Lý do chi tiết">{{ $it->reason_discription }}</td>
+                                        <td data-label="Lý do chi tiết">{{ $it->reason_description }}</td>
                                         @if ($it->leave_status == 0)
                                             <td data-label="Trạng thái" class="text-danger">Chưa phê duyệt</td>
-                                            @if (Auth::user()->hasPermissionOnPage('8', '5'))
+                                            @if (Auth::user()->hasPermissionOnPage('6', '5'))
                                                 <td data-label="Phê duyệt" class=" text-center">
                                                     <a href="#" title="Phê duyệt" data-bs-toggle="modal"
                                                         data-bs-target="#approveLeave-{{ $it->id }}">
@@ -120,10 +120,10 @@
                                             @endif
                                         @elseif ($it->leave_status == 1)
                                             <td data-label="Trạng thái" class="text-success">Đã phê duyệt</td>
-                                            @if (Auth::user()->hasPermissionOnPage('8', '5'))
+                                            @if (Auth::user()->hasPermissionOnPage('6', '5'))
                                                 <td data-label="Phê duyệt" class=" text-center">
                                                     <i class="fas fa-toggle-on" style="font-size: 28px; color:#009879"></i>
-                                                    @if (Auth::user()->hasPermissionOnPage('6', '5'))
+                                                    @if (Auth::user()->hasPermissionOnPage('4', '5'))
                                                         <a href="#" data-bs-toggle="modal"
                                                             data-bs-target="#deleteLeaveModal-{{ $it->id }}">
                                                             <i class="ti ti-trash f-20 ms-3" style="font-size: 20px;"></i>
@@ -133,11 +133,11 @@
                                             @endif
                                         @elseif ($it->leave_status == 2)
                                             <td data-label="Trạng thái" class="text-danger">Đã bị từ chối</td>
-                                            @if (Auth::user()->hasPermissionOnPage('8', '5'))
+                                            @if (Auth::user()->hasPermissionOnPage('6', '5'))
                                                 <td data-label="Phê duyệt" class=" text-center">
                                                     <i class="fas fa-toggle-on"
                                                         style="font-size: 28px; color:#fb0101"></i>
-                                                    @if (Auth::user()->hasPermissionOnPage('6', '5'))
+                                                    @if (Auth::user()->hasPermissionOnPage('4', '5'))
                                                         <a href="#" data-bs-toggle="modal"
                                                             data-bs-target="#deleteLeaveModal-{{ $it->id }}">
                                                             <i class="ti ti-trash f-20 ms-3" style="font-size: 20px;"></i>
@@ -265,7 +265,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Lý do chi tiết</label>
-                                    <textarea name="reason_discription" class="form-control" cols="10" rows="3"></textarea>
+                                    <textarea name="reason_description" class="form-control" cols="10" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>

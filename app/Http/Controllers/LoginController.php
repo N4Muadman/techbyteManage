@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -20,6 +21,9 @@ class LoginController extends Controller
     public function login(Request $request){
         $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials, true)) {
+
+            Cache::forever('user_permissions_' . Auth::user()->id, Auth::user()->role->pagePermissions()->where('status', 1)->get(['permission_id', 'page_id'])->toArray());
+
             return redirect()->route('home.admin')->with('success', 'Đăng nhập thành công');
         }
 
@@ -27,6 +31,7 @@ class LoginController extends Controller
     }
     public function logout(){
         if (Auth::check()){
+            Cache::forget('user_permissions_' . Auth::user()->id);
             Auth::logout();
         }
         return redirect()->route('login.index');

@@ -22,6 +22,7 @@
     <script src="{{ asset('adminStatic/assets/js/tech-stack.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('adminStatic/assets/css/style-preset.css') }}">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
@@ -32,13 +33,15 @@
         </div>
     @endif
     @if (session()->has('error'))
-        <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
-        </div>
-    @endif
-    @if (session()->has('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Có lỗi xảy ra
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -81,18 +84,6 @@
                 <ul class="pc-navbar">
                     <li class="pc-item pc-caption"><label>Điều hướng</label></li>
                     <x-menu />
-                    {{-- @if (Auth::check())
-                        @if (Auth::user()->role_id == 4)
-                            @include('./sidebar/employee')
-                        @elseif (Auth::user()->role_id == 3)
-                            @include('./sidebar/branch')
-                        @elseif (Auth::user()->role_id == 5)
-                            @include('./sidebar/customers-service')
-                        @else
-                            @include('./sidebar/admin')
-                        @endif
-                    @endif --}}
-
                 </ul>
             </div>
         </div>
@@ -456,16 +447,18 @@
                 alert.classList.add("d-none");
             }
         }, 3000);
-        $(document).ready(function() {
+        function formatMoney(){
             $('.money').inputmask('currency', {
                 prefix: '',
-                suffix: ' đồng',
+                suffix: ' VNĐ',
                 autoUnmask: true,
                 digits: 0,
                 digitsOptional: false,
                 placeholder: '0'
             });
-        });
+        }
+
+        formatMoney();
     </script>
 
 </body>

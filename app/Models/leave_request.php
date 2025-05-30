@@ -13,7 +13,7 @@ class leave_request extends Model
         'leave_type',
         'start_date',
         'end_date',
-        'reason_discription',
+        'reason_description',
         'leave_status',
     ];
 

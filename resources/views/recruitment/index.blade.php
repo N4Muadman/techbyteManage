@@ -15,7 +15,7 @@
                 <div class="col-md-12">
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách tuyển dụng</h2>
-                        @if (Auth::user()->hasPermissionOnPage('3', '4'))
+                        @if (Auth::user()->hasPermissionOnPage('1', '4'))
                             <button data-bs-toggle="modal" data-bs-target="#addRecruitmentModal"
                                 class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add
                                 new
@@ -170,114 +170,140 @@
     </div>
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://unpkg.com/quill-image-resize-module@latest/image-resize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            quill('quill-editor-area', '#quill-editor')
-        });
+            const editor = quill('quill-editor-area', '#quill-editor');
 
-        function quill(idEditorErea, idEditor) {
-            if (document.getElementById(idEditorErea)) {
-                var editor = new Quill(idEditor, {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-
-                            [{
-                                'font': []
-                            }],
-                            [{
-                                'size': ['small', false, 'large', 'huge']
-                            }],
-                            [{
-                                'color': []
-                            }, {
-                                'background': []
-                            }],
-                            [{
-                                'header': [1, 2, false]
-                            }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            ['blockquote', 'code-block'],
-                            [{
-                                'list': 'ordered'
-                            }, {
-                                'list': 'bullet'
-                            }],
-                            ['link', 'image', 'video'],
-                            ['clean']
-                        ]
-                    }
-                });
-
-                var quillEditor = document.getElementById(idEditorErea);
-                editor.root.innerHTML = quillEditor.value || '';
-
-                editor.getModule('toolbar').addHandler('image', function() {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.click();
-
-                    input.onchange = function() {
-                        var file = input.files[0];
-                        if (file) {
-                            var formData = new FormData();
-                            formData.append('image', file);
-
-                            fetch('{{ config('services.recruitment_api.url') }}/api/upload-image-description', {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                    },
-                                    body: formData
-                                })
-                                .then(response => response.json())
-                                .then(result => {
-                                    const url = result.url;
-                                    const range = editor.getSelection();
-                                    editor.insertEmbed(range.index, 'image',
-                                        url);
-                                })
-                                .catch(error => console.error('Error uploading image:', error));
+            function quill(idEditorErea, idEditor) {
+                if (document.getElementById(idEditorErea)) {
+                    var editor = new Quill(idEditor, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: [
+                                // Thêm nhiều tùy chọn định dạng
+                                [{
+                                    'font': []
+                                }],
+                                [{
+                                    'size': ['small', false, 'large', 'huge']
+                                }],
+                                [{
+                                    'header': [1, 2, 3, 4, 5, 6, false]
+                                }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{
+                                    'color': []
+                                }, {
+                                    'background': []
+                                }],
+                                // Thêm tùy chọn căn chỉnh
+                                [{
+                                    'align': ['', 'center', 'right', 'justify']
+                                }],
+                                ['blockquote', 'code-block'],
+                                [{
+                                    'list': 'ordered'
+                                }, {
+                                    'list': 'bullet'
+                                }, {
+                                    'indent': '-1'
+                                }, {
+                                    'indent': '+1'
+                                }],
+                                ['link', 'image', 'video'],
+                                ['clean'],
+                                // Thêm tùy chọn script/subscript
+                                [{
+                                    'script': 'sub'
+                                }, {
+                                    'script': 'super'
+                                }],
+                                // Thêm tùy chọn direction
+                                [{
+                                    'direction': 'rtl'
+                                }]
+                            ],
+                            imageResize: true
                         }
-                    };
-                });
+                    });
 
-                editor.on('text-change', function() {
+                    // Set initial content from div into editor
+
+                    // Upload image handler
+                    editor.getModule('toolbar').addHandler('image', function() {
+                        var input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.setAttribute('accept', 'image/*');
+                        input.click();
+
+                        input.onchange = function() {
+                            var file = input.files[0];
+                            if (file) {
+                                var formData = new FormData();
+                                formData.append('image', file);
+
+                                fetch('{{ config('services.recruitment_api.url') }}/api/upload-image-description', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: formData
+                                    })
+                                    .then(response => response.json())
+                                    .then(result => {
+                                        const url = result.url;
+                                        const range = editor.getSelection();
+                                        editor.insertEmbed(range.index, 'image', url);
+                                    })
+                                    .catch(error => console.error('Error uploading image:', error));
+                            }
+                        };
+                    });
+
+                    var quillEditor = document.getElementById(idEditorErea);
                     quillEditor.value = editor.root.innerHTML;
-                });
-                quillEditor.addEventListener('input', function() {
-                    editor.root.innerHTML = quillEditor.value;
-                });
-            }
-        }
 
-        async function getRecruitments(position, date) {
-            const url = '{{ config('services.recruitment_api.url') }}/api/recruitments';
+                    // Sync changes to hidden textarea
+                    editor.on('text-change', function() {
+                        quillEditor.value = editor.root.innerHTML;
+                    });
 
-            if (position != '' || date != '') {
-                url += '?position=' + position + '&date=' + date;
+                    // Sync textarea back to editor when typing manually (if ever)
+                    quillEditor.addEventListener('input', function() {
+                        editor.root.innerHTML = quillEditor.value;
+                    });
+
+                    return editor;
+                }
             }
-            try {
-                const response = await fetch(`${url}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
+
+            async function getRecruitments(position, date) {
+                const url = '{{ config('services.recruitment_api.url') }}/api/recruitments';
+
+                if (position != '' || date != '') {
+                    url += '?position=' + position + '&date=' + date;
+                }
+                try {
+                    const response = await fetch(`${url}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    if (!response.ok) {
+                        alert(`Thông báo: Có lỗi xảy ra - ${response.status}`);
+                        return;
                     }
-                });
-                if (!response.ok) {
-                    alert(`Thông báo: Có lỗi xảy ra - ${response.status}`);
-                    return;
-                }
-                const data = await response.json();
-                if (!data.recruitments || data.recruitments.length === 0) {
-                    document.getElementById('recruitment-list').innerHTML =
-                        `<tr><td colspan="8">Không có dữ liệu</td></tr>`;
-                    return;
-                }
-                let listRecruitElement = '';
-                data.recruitments.forEach((item) => {
-                    listRecruitElement += `<tr>
+                    const data = await response.json();
+                    if (!data.recruitments || data.recruitments.length === 0) {
+                        document.getElementById('recruitment-list').innerHTML =
+                            `<tr><td colspan="8">Không có dữ liệu</td></tr>`;
+                        return;
+                    }
+                    let listRecruitElement = '';
+                    data.recruitments.forEach((item) => {
+                        listRecruitElement += `<tr>
                         <td>${item.id}</td>
                         <td>${item.position_job}</td>
                         <td>${item.salary}</td>
@@ -288,17 +314,17 @@
                             ? '<span class="text-success">Đang hiển thị</span>'
                             : '<span class="text-danger">Đang ẩn</span>'}</td>
                         <td>
-                            @if (Auth::user()->hasPermissionOnPage('5', '4'))
+                            @if (Auth::user()->hasPermissionOnPage('3', '4'))
                                 <a href="{{ config('services.recruitment_api.url') }}/recruitment/detail/${item.id}" class="avtar avtar-xs btn-link-secondary">
                                     <i class="ti ti-eye f-20"></i>
                                 </a>
                             @endif
 
-                            @if (Auth::user()->hasPermissionOnPage('4', '4'))
+                            @if (Auth::user()->hasPermissionOnPage('2', '4'))
                                 <a href="#" class="avtar avtar-edit avtar-xs btn-link-secondary" data-id="${item.id}">
                                     <i class="ti ti-edit f-20"></i></a>
                             @endif
-                            @if (Auth::user()->hasPermissionOnPage('6', '4'))
+                            @if (Auth::user()->hasPermissionOnPage('4', '4'))
                                 <a href="#" class="avtar avtar-delete avtar-xs btn-link-secondary" data-id="${item.id}" data-position="${item.position_job}">
                                     <i class="ti ti-trash f-20"></i>
                                 </a>
@@ -306,68 +332,71 @@
 
                         </td>
                         <td>
-                            @if (Auth::user()->hasPermissionOnPage('5', '4'))
+                            @if (Auth::user()->hasPermissionOnPage('3', '4'))
                                 <a href="#" class="avtar avtar-view-cv avtar-xs btn-link-secondary" data-id="${item.id}">
                                     <i class="fas fa-info-circle f-20"></i></a>
                             @endif
                         </td>
                     </tr>`;
-                });
+                    });
 
-                document.getElementById('recruitment-list').innerHTML = listRecruitElement;
-                onClickEdit();
-                onClickDelete();
-                onClickViewCV();
-            } catch (error) {
-                alert('Không thể kết nối đến server.');
+                    document.getElementById('recruitment-list').innerHTML = listRecruitElement;
+                    onClickEdit();
+                    onClickDelete();
+                    onClickViewCV();
+                } catch (error) {
+                    alert('Không thể kết nối đến server.');
+                }
             }
-        }
-        document.getElementById('add-recruitment').addEventListener('submit', async () => {
-            event.preventDefault()
-            try {
-                tinymce.triggerSave();
-                const form = event.target;
-                const formData = new FormData(form);
+            document.getElementById('add-recruitment').addEventListener('submit', async () => {
+                event.preventDefault()
+                try {
+                    // tinymce.triggerSave();
+                    const form = event.target;
+                    const formData = new FormData(form);
 
-                const response = await fetch('{{ config('services.recruitment_api.url') }}/api/recruitments', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                    body: formData,
-                });
+                    const response = await fetch(
+                        '{{ config('services.recruitment_api.url') }}/api/recruitments', {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                            },
+                            body: formData,
+                        });
 
-                if (!response.ok) {
-                    document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
+                    if (!response.ok) {
+                        document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
                                                                         Thêm tin tuyển dụng không thành công
                                                                     </div>`;
-                    setTimeoutAlert();
-                    return;
-                }
+                        setTimeoutAlert();
+                        return;
+                    }
 
-                getRecruitments('', '');
-                document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
+                    getRecruitments('', '');
+                    document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
                                                                         Thêm tin tuyển dụng thành công
                                                                     </div>`;
-                setTimeoutAlert();
+                    setTimeoutAlert();
 
-                form.reset();
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addRecruitmentModal'));
-                modal.hide();
-                tinymce.editors.forEach((editor) => editor.setContent(''));
-            } catch (error) {
-                alert('Có lỗi xảy ra ' + error);
-            }
-        });
+                    form.reset();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById(
+                        'addRecruitmentModal'));
+                    modal.hide();
+                    editor.setContents([]);
+                    // tinymce.editors.forEach((editor) => editor.setContent(''));
+                } catch (error) {
+                    alert('Có lỗi xảy ra ' + error);
+                }
+            });
 
-        function onClickEdit() {
-            document.querySelectorAll('.avtar-edit').forEach((element) => {
-                element.addEventListener('click', async () => {
-                    const id = element.dataset.id;
-                    if (id) {
-                        const recruitment = await getRecruitmentDetails(id);
-                        if (recruitment) {
-                            document.getElementById('dialog-edit').innerHTML = `<div class="modal fade" id="editRecruitmentModal" tabindex="-1" aria-labelledby="addRecruitmentModalLabel"
+            function onClickEdit() {
+                document.querySelectorAll('.avtar-edit').forEach((element) => {
+                    element.addEventListener('click', async () => {
+                        const id = element.dataset.id;
+                        if (id) {
+                            const recruitment = await getRecruitmentDetails(id);
+                            if (recruitment) {
+                                document.getElementById('dialog-edit').innerHTML = `<div class="modal fade" id="editRecruitmentModal" tabindex="-1" aria-labelledby="addRecruitmentModalLabel"
                                                                                 aria-hidden="true">
                                                                                 <div class="modal-dialog modal-xl">
                                                                                     <div class="modal-content">
@@ -414,10 +443,10 @@
                                                                                                         <div class="mb-3">
                                                                                                             <label class="form-label">Mô tả công việc</label>
                                                                                                             <div id="quill-editor-edit" class="mb-3" style="height: 300px;">
-                                                                                                                
+                                                                                                                ${recruitment.content}
                                                                                                             </div>
                                                                                                             <textarea rows="3" class="mb-3 d-none" name="content" id="quill-editor-area-edit">
-                                                                                                                ${recruitment.content}</textarea>
+                                                                                                                </textarea>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -428,31 +457,32 @@
                                                                                 </div>
                                                                             </div>`;
 
-                            await quill('quill-editor-area-edit', '#quill-editor-edit')
-                            const modal = new bootstrap.Modal(document.getElementById(
-                                'editRecruitmentModal'));
-                            modal.show();
+                                await quill('quill-editor-area-edit', '#quill-editor-edit')
+                                const modal = new bootstrap.Modal(document.getElementById(
+                                    'editRecruitmentModal'));
+                                modal.show();
 
-                            document.getElementById('update-recruitment').addEventListener('submit',
-                                async () => {
-                                    event.preventDefault();
-                                    await updateRecruiment(id);
-                                })
+                                document.getElementById('update-recruitment').addEventListener(
+                                    'submit',
+                                    async () => {
+                                        event.preventDefault();
+                                        await updateRecruiment(id);
+                                    })
+                            }
                         }
-                    }
 
+                    })
                 })
-            })
-        }
+            }
 
-        function onClickDelete() {
-            document.querySelectorAll('.avtar-delete').forEach((element) => {
-                element.addEventListener('click', async () => {
-                    const id = element.dataset.id;
-                    const positionJob = element.dataset.position;
+            function onClickDelete() {
+                document.querySelectorAll('.avtar-delete').forEach((element) => {
+                    element.addEventListener('click', async () => {
+                        const id = element.dataset.id;
+                        const positionJob = element.dataset.position;
 
-                    if (id) {
-                        document.getElementById('dialog-delete').innerHTML = `<div class="modal fade" id="delete-recruitment-modal" tabindex="-1"
+                        if (id) {
+                            document.getElementById('dialog-delete').innerHTML = `<div class="modal fade" id="delete-recruitment-modal" tabindex="-1"
                                                                                 aria-labelledby="deleteRecruitmentLabel" aria-hidden="true">
                                                                                 <div class="modal-dialog">
                                                                                     <div class="modal-content">
@@ -472,77 +502,79 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>`;
-                        const modal = new bootstrap.Modal(document.getElementById(
-                            'delete-recruitment-modal'));
-                        modal.show();
-                        document.getElementById('btn-delete-recruitment').addEventListener('click',
-                            () => {
-                                deleteRecruitment(id);
-                                modal.hide();
-                            })
-                    }
-                })
-            })
-        }
-
-        function onClickViewCV() {
-            document.querySelectorAll('.avtar-view-cv').forEach((element) => {
-                element.addEventListener('click', async () => {
-                    const id = element.dataset.id;
-                    if (id) {
-                        getCVOfRecuitment(id);
-                    }
-
-
-                    const modal = new bootstrap.Modal(document.getElementById('view-cv'));
-                    modal.show();
-                });
-            })
-        }
-        async function deleteCV(id, recruitmentId) {
-            try {
-                const response = await fetch(
-                    `{{ config('services.recruitment_api.url') }}/api/delete-application/${id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Accept': 'application/json',
+                            const modal = new bootstrap.Modal(document.getElementById(
+                                'delete-recruitment-modal'));
+                            modal.show();
+                            document.getElementById('btn-delete-recruitment').addEventListener(
+                                'click',
+                                () => {
+                                    deleteRecruitment(id);
+                                    modal.hide();
+                                })
                         }
+                    })
+                })
+            }
+
+            function onClickViewCV() {
+                document.querySelectorAll('.avtar-view-cv').forEach((element) => {
+                    element.addEventListener('click', async () => {
+                        const id = element.dataset.id;
+                        if (id) {
+                            getCVOfRecuitment(id);
+                        }
+
+
+                        const modal = new bootstrap.Modal(document.getElementById('view-cv'));
+                        modal.show();
                     });
-                if (!response.ok) {
-                    document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
+                })
+            }
+            async function deleteCV(id, recruitmentId) {
+                try {
+                    const response = await fetch(
+                        `{{ config('services.recruitment_api.url') }}/api/delete-application/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        });
+                    if (!response.ok) {
+                        document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
                                                                         Có lỗi xảy ra
                                                                     </div>`;
-                    setTimeoutAlert();
-                    return;
-                }
-                await getCVOfRecuitment(recruitmentId);
-                document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
+                        setTimeoutAlert();
+                        return;
+                    }
+                    await getCVOfRecuitment(recruitmentId);
+                    document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
                                                                         Xóa tin tuyển dụng thành công
                                                                     </div>`;
-                setTimeoutAlert();
+                    setTimeoutAlert();
 
-            } catch (error) {
-                console.log("Có lỗi xảy ra 1", error);
-                return;
-            }
-        }
-        async function getCVOfRecuitment(id) {
-            try {
-                const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/get-cvs/${id}`, {
-                    method: "GET",
-                    headers: {
-                        'accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    alert('Có lỗi xảy ra');
+                } catch (error) {
+                    console.log("Có lỗi xảy ra 1", error);
                     return;
                 }
-                const data = await response.json();
-                let cvListElement = '';
-                data.cvs.forEach((item) => {
-                    cvListElement += `
+            }
+            async function getCVOfRecuitment(id) {
+                try {
+                    const response = await fetch(
+                        `{{ config('services.recruitment_api.url') }}/api/get-cvs/${id}`, {
+                            method: "GET",
+                            headers: {
+                                'accept': 'application/json'
+                            }
+                        });
+
+                    if (!response.ok) {
+                        alert('Có lỗi xảy ra');
+                        return;
+                    }
+                    const data = await response.json();
+                    let cvListElement = '';
+                    data.cvs.forEach((item) => {
+                        cvListElement += `
                                 <tr>
                                     <td>${item.full_name}</td>
                                     <td>${item.phone_number}</td>
@@ -562,115 +594,119 @@
                                     </td>
                                 </tr>
                             `;
-                });
-                document.getElementById('cv-list').innerHTML = cvListElement;
-
-                document.querySelectorAll('.btn-delete-cv').forEach((element) => {
-                    element.addEventListener('click', async () => {
-                        const idCV = element.dataset.id;
-                        await deleteCV(idCV, id);
                     });
-                })
-            } catch (error) {
-                console.log("Có lỗi xảy ra 1", error);
-                return;
+                    document.getElementById('cv-list').innerHTML = cvListElement;
+
+                    document.querySelectorAll('.btn-delete-cv').forEach((element) => {
+                        element.addEventListener('click', async () => {
+                            const idCV = element.dataset.id;
+                            await deleteCV(idCV, id);
+                        });
+                    })
+                } catch (error) {
+                    console.log("Có lỗi xảy ra 1", error);
+                    return;
+                }
+
             }
 
-        }
-
-        function setTimeoutAlert() {
-            setTimeout(function() {
-                const alert = document.getElementsByClassName("alert")[0];
-                if (alert) {
-                    alert.classList.add("d-none");
-                }
-            }, 3000);
-        }
-        async function getRecruitmentDetails(id) {
-            try {
-                const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
+            function setTimeoutAlert() {
+                setTimeout(function() {
+                    const alert = document.getElementsByClassName("alert")[0];
+                    if (alert) {
+                        alert.classList.add("d-none");
                     }
-                });
-                if (!response.ok) {
-                    document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
+                }, 3000);
+            }
+            async function getRecruitmentDetails(id) {
+                try {
+                    const response = await fetch(
+                        `{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        });
+                    if (!response.ok) {
+                        document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
                                                                         Có lỗi xảy ra
                                                                     </div>`;
-                    setTimeoutAlert();
+                        setTimeoutAlert();
+                        return null;
+                    }
+                    const data = await response.json();
+
+                    return data.recruitment;
+                } catch (error) {
+                    console.log("Có lỗi xảy ra 1", error);
                     return null;
                 }
-                const data = await response.json();
-
-                return data.recruitment;
-            } catch (error) {
-                console.log("Có lỗi xảy ra 1", error);
-                return null;
             }
-        }
-        async function updateRecruiment(id) {
-            try {
-                const form = event.target;
-                const formData = new FormData(form);
+            async function updateRecruiment(id) {
+                try {
+                    const form = event.target;
+                    const formData = new FormData(form);
 
 
-                const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                    body: formData,
-                });
+                    const response = await fetch(
+                        `{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                            },
+                            body: formData,
+                        });
 
-                if (!response.ok) {
-                    document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
+                    if (!response.ok) {
+                        document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
                                                                         Cập nhât tin tuyển dụng không thành công
                                                                     </div>`;
-                    setTimeoutAlert();
-                    return;
-                }
+                        setTimeoutAlert();
+                        return;
+                    }
 
-                getRecruitments('', '');
-                document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
+                    getRecruitments('', '');
+                    document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
                                                                         Cập nhật tin tuyển dụng thành công
                                                                     </div>`;
-                setTimeoutAlert();
+                    setTimeoutAlert();
 
-                form.reset();
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editRecruitmentModal'));
-                modal.hide();
-            } catch (error) {
-                alert('Có lỗi xảy ra: ' + error);
+                    form.reset();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editRecruitmentModal'));
+                    modal.hide();
+                } catch (error) {
+                    alert('Có lỗi xảy ra: ' + error);
+                }
             }
-        }
-        async function deleteRecruitment(id) {
-            try {
-                const response = await fetch(`{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                    }
-                });
-                if (!response.ok) {
-                    document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
+            async function deleteRecruitment(id) {
+                try {
+                    const response = await fetch(
+                        `{{ config('services.recruitment_api.url') }}/api/recruitments/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        });
+                    if (!response.ok) {
+                        document.getElementById('notification').innerHTML = `<div class="alert alert-danger" role="alert">
                                                                         Có lỗi xảy ra
                                                                     </div>`;
-                    setTimeoutAlert();
-                    return;
-                }
-                await getRecruitments('', '');
-                document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
+                        setTimeoutAlert();
+                        return;
+                    }
+                    await getRecruitments('', '');
+                    document.getElementById('notification').innerHTML = `<div class="alert alert-success" role="alert">
                                                                         Xóa tin tuyển dụng thành công
                                                                     </div>`;
-                setTimeoutAlert();
+                    setTimeoutAlert();
 
-            } catch (error) {
-                console.log("Có lỗi xảy ra 1", error);
-                return;
+                } catch (error) {
+                    console.log("Có lỗi xảy ra 1", error);
+                    return;
+                }
             }
-        }
 
-        getRecruitments('', '');
+            getRecruitments('', '');
+        });
     </script>
 @endsection

@@ -52,7 +52,7 @@ class BirthdayNotification extends Command
         notification::create([
             'role_id' => 1,
             'name' => "Thông báo sinh nhật",
-            'discription' => $description
+            'description' => $description
         ]);
 
         $employeesReceive = Employee::with('user')->whereHas('user', function ($query) {
@@ -64,7 +64,7 @@ class BirthdayNotification extends Command
                 'role_id' => 4,
                 'emloyee_id' => $employee->id,
                 'name' => "Thông báo sinh nhật",
-                'discription' => $description
+                'description' => $description
             ]);
         }
 

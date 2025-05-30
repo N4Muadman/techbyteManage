@@ -45,8 +45,6 @@
                             <thead>
                                 <tr>
                                     <th style="width: 15%">Tên trang</th>
-                                    <th>Quyền truy cập</th>
-                                    <th>Hiển thị danh mục</th>
                                     <th>Thêm</th>
                                     <th>Sửa</th>
                                     <th>Xem</th>

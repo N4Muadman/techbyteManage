@@ -11,7 +11,7 @@ class notification extends Model
     protected $table = 'notifycation';
     protected $fillable = [
         'name',
-        'discription',
+        'description',
         'role_id',
         'employee_id',
         'status',

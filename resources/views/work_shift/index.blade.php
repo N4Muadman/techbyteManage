@@ -16,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách ca làm</h2>
-                        @if (Auth::user()->hasPermissionOnPage('3', '7'))
+                        @if (Auth::user()->hasPermissionOnPage('1', '6'))
                             <button data-bs-toggle="modal" data-bs-target="#addWork_shiftModal"
                                 class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add
                                 new
@@ -38,7 +38,7 @@
                                     <th>Tên ca</th>
                                     <th>Giờ bắt đầu</th>
                                     <th>Giờ kết thúc</th>
-                                    @if (Auth::user()->hasPermissionOnPage('4', '7') || Auth::user()->hasPermissionOnPage('6', '7'))
+                                    @if (Auth::user()->hasPermissionOnPage('2', '6') || Auth::user()->hasPermissionOnPage('4', '6'))
                                     <th>Chức năng</th>
                                     @endif
                                 </tr>
@@ -50,13 +50,13 @@
                                         <td data-label="Giờ bắt đầu">{{ $it->start_time }}</td>
                                         <td data-label="Giờ kết thúc">{{ $it->end_time }}</td>
                                         <td data-label="Chức năng">
-                                            @if (Auth::user()->hasPermissionOnPage('4', '7'))
+                                            @if (Auth::user()->hasPermissionOnPage('2', '6'))
                                                 <a href="#" data-bs-toggle="modal"
                                                     data-bs-target="#editWork_shiftModal-{{ $it->id }}"
                                                     class="employee-edit me-3"><i class="fas fa-edit"></i></a>
                                             @endif
 
-                                            @if (Auth::user()->hasPermissionOnPage('6', '7'))
+                                            @if (Auth::user()->hasPermissionOnPage('4', '6'))
                                                 <a href="#" data-bs-toggle="modal"
                                                     data-bs-target="#deleteWork_shiftModal-{{ $it->id }}"><i
                                                         class="ti ti-trash f-20"></i></a>

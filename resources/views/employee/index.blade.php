@@ -16,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách nhân viên</h2>
-                        @if (Auth::user()->hasPermissionOnPage('3', '1'))
+                        @if (Auth::user()->hasPermissionOnPage('1', '1'))
                             <button data-bs-toggle="modal" data-bs-target="#addEmployeeModal"
                             class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add new
                             item</button>
@@ -95,7 +95,7 @@
                                         <td data-label="Địa chỉ">{{ $it->address }}</td>
                                         <td data-label="SDT">{{ $it->phone_number }}</td>
                                         <td data-label="Chức vụ">{{ $it->position }}</td>
-                                        <td data-label="Chi nhánh">{{ $it->branch->branch_name }}</td>
+                                        <td data-label="Chi nhánh">{{ $it->branch?->branch_name }}</td>
                                         <td data-label="Ngày bắt đầu làm">{{ $it->start_date }}</td>
                                         @if (request('status'))
                                             <td data-label="Ngày nghỉ việc">{{ $it->end_date }}</td>
@@ -103,22 +103,22 @@
                                         @else
                                             <td data-label="Lương cơ bản">{{ number_format($it->base_salary) . ' đ' }}</td>
                                             <td class="d-flex" style="margin-bottom: -5px">
-                                                @if (Auth::user()->hasPermissionOnPage('5', '1'))
+                                                @if (Auth::user()->hasPermissionOnPage('3', '1'))
                                                 <a href="#" data-id="{{ $it->id }}"
                                                     class="employee-detail avtar avtar-xs btn-link-secondary"><i class="fas fa-info-circle"></i></a>
                                                 @endif
 
-                                                @if (Auth::user()->hasPermissionOnPage('4', '1'))
+                                                @if (Auth::user()->hasPermissionOnPage('2', '1'))
                                                 <a href="#" data-id="{{ $it->id }}"
                                                     class="employee-edit avtar avtar-xs btn-link-secondary"><i class="fas fa-user-edit"></i></a>
                                                 @endif
-                                                @if (Auth::user()->hasPermissionOnPage('7', '1'))
+                                                @if (Auth::user()->hasPermissionOnPage('5', '1'))
                                                     <a href="#" data-bs-toggle="modal" class="avtar avtar-xs btn-link-secondary"
                                                         data-bs-target="#empowerEmployeeModal-{{ $it->id }}"><i
                                                             class="fas fa-user-cog"></i></a>
                                                 @endif
 
-                                                @if (Auth::user()->hasPermissionOnPage('6', '1'))
+                                                @if (Auth::user()->hasPermissionOnPage('4', '1'))
                                                 <a href="#" data-bs-toggle="modal" class="avtar avtar-xs btn-link-secondary"
                                                     data-bs-target="#deleteEmployeeModal-{{ $it->id }}"><i
                                                         class="ti ti-trash f-18"></i></a>
@@ -184,7 +184,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Vai trò hiện tại:
-                                                <strong>{{ $it?->user?->role->name }}</strong></label>
+                                                <strong>{{ $it?->user?->role?->name }}</strong></label>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Vai trò</label>

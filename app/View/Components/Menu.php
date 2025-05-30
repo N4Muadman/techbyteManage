@@ -24,7 +24,6 @@ class Menu extends Component
      */
     public function render(): View|Closure|string
     {
-        $menus = Page::orderBy('arrange')->get();
-        return view('components.menu', compact('menus'));
+        return view('components.menu');
     }
 }

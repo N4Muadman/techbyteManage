@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
 {
@@ -23,41 +24,61 @@ class User extends Authenticatable
         'employee_id',
     ];
 
-    public function employee(){
+    public function employee()
+    {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function role(){
+    public function role()
+    {
         return $this->belongsTo(role::class, 'role_id');
     }
 
     public function hasPermissionOnPage($permissionId, $pageId)
     {
+        if ($this->role_id == 1) {
+            return true;
+        }
+
+        $cachedPermissions = Cache::rememberForever('user_permissions_' . $this->id, function () {
+            return $this->role->pagePermissions()
+                ->where('status', 1)
+                ->get(['permission_id', 'page_id'])
+                ->toArray();
+        });
+
+
+        return collect($cachedPermissions)->contains(function ($permission) use ($permissionId, $pageId) {
+            return $permission['permission_id'] == $permissionId
+                && $permission['page_id'] == $pageId;
+        });
+    }
+
+    public function canAccessPage($permissionIds, $pageId)
+    {
+        if ($this->role_id == 1) {
+            return true;
+        }
+
+        $cachedPermissions = Cache::rememberForever('user_permissions_' . $this->id, function () {
+            return $this->role->pagePermissions()
+                ->where('status', 1)
+                ->get(['permission_id', 'page_id'])
+                ->toArray();
+        });
+
+        return collect($cachedPermissions)->contains(function ($permission) use ($permissionIds, $pageId) {
+            return in_array($permission['permission_id'], $permissionIds)
+                && $permission['page_id'] == $pageId;
+        });
+    }
+
+    public function is_project_leader($project_leader_id) {
         if ($this->role_id == 1){
             return true;
         }
 
-        return $this->role->pagePermissions()
-                ->whereHas('page', function ($query) use ($pageId) {
-                    $query->where('id', $pageId);
-                })
-                ->whereHas('permission', function ($query) use ($permissionId) {
-                    $query->where('id', $permissionId);
-                })
-                ->where('status', 1)
-                ->exists();
-    }
-
-    public function hasPermissionOnPath($permissionId, $path){
-        return $this->role->pagePermissions()
-                ->whereHas('page', function ($query) use ($path) {
-                    $query->where('slug', $path);
-                })
-                ->whereHas('permission', function ($query) use ($permissionId) {
-                    $query->where('id', $permissionId);
-                })
-                ->where('status', 1)
-                ->exists();
+        return $this->id == $project_leader_id;
     }
     /**
      * The attributes that should be hidden for serialization.

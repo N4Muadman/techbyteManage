@@ -16,7 +16,7 @@
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách chấm công</h2>
 
-                        @if (Auth::user()->hasPermissionOnPage('3', '12'))
+                        @if (Auth::user()->hasPermissionOnPage('1', '13'))
                             <button data-bs-toggle="modal" data-bs-target="#addAttenModal"
                                 class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add
                                 new
@@ -81,7 +81,7 @@
                                     <th>Tổng số giờ</th>
                                     <th>Trạng thái</th>
                                     @auth
-                                        @if (Auth::user()->hasPermissionOnPage('8', '12'))
+                                        @if (Auth::user()->hasPermissionOnPage('4', '13'))
                                             <th>Chức năng</th>
                                         @endif
                                     @endauth
@@ -136,48 +136,14 @@
                                         </td>
                                         <td data-label="Tổng số giờ">{{ formatHour($it->working_hours) }}</td>
                                         <td class="text-success">{!! calculatehour($it->check_in, $it->work_schedule->start_time, false) !!}</td>
-                                        @if ($it->status == 1)
-                                            <td data-label="Phê duyệt" class=" text-center">
-                                                {{-- @if (Auth::user()->hasPermissionOnPage('8', '12'))
-                                                    <i class="fas fa-toggle-on me-3"
-                                                        style="font-size: 18px; color:#009879"></i>
-                                                @endif --}}
-                                                {{-- @if (Auth::user()->hasPermissionOnPage('4', '12'))
-                                                    <a href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#editAttenModal-{{ $it->id }}"
-                                                        class="employee-edit avtar avtar-show avtar-xs btn-link-secondary">
-                                                        <i class="fa fa-edit"></i></a>
-                                                @endif --}}
-                                                @if (Auth::user()->hasPermissionOnPage('6', '12'))
-                                                    <a href="#" data-bs-toggle="modal"
-                                                        class="avtar avtar-show avtar-xs btn-link-secondary"
-                                                        data-bs-target="#deleteAttenModal-{{ $it->id }}"><i
-                                                            class="fa fa-trash"></i></a>
-                                                @endif
-                                            </td>
-                                        @else
-                                            @auth
-                                                <td data-label="Phê duyệt" class="text-center">
-                                                    {{-- @if (Auth::user()->hasPermissionOnPage('8', '12'))
-                                                        <a href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#approveAttendance-{{ $it->id }}"><i
-                                                                class="fas fa-toggle-off me-3" style="font-size: 18px"></i></a>
-                                                    @endif --}}
-                                                    {{-- @if (Auth::user()->hasPermissionOnPage('4', '12'))
-                                                        <a href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#editAttenModal-{{ $it->id }}"
-                                                            class="employee-edit avtar avtar-show avtar-xs btn-link-secondary">
-                                                            <i class="fa fa-edit"></i></a>
-                                                    @endif --}}
-                                                    @if (Auth::user()->hasPermissionOnPage('6', '12'))
-                                                        <a href="#" data-bs-toggle="modal"
-                                                            class="avtar avtar-show avtar-xs btn-link-secondary"
-                                                            data-bs-target="#deleteAttenModal-{{ $it->id }}"><i
-                                                                class="fa fa-trash"></i></a>
-                                                    @endif
-                                                </td>
-                                            @endauth
-                                        @endif
+                                        <td data-label="Phê duyệt" class=" text-center">
+                                            @if (Auth::user()->hasPermissionOnPage('4', '13'))
+                                                <a href="#" data-bs-toggle="modal"
+                                                    class="avtar avtar-show avtar-xs btn-link-secondary"
+                                                    data-bs-target="#deleteAttenModal-{{ $it->id }}"><i
+                                                        class="fa fa-trash"></i></a>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -68,7 +68,7 @@ class hrtransferController extends Controller
                 'name' => "Điều động nhân sự",
                 'branch_id' => $hrtransfer->old_branch,
                 'url' => route('hrtransfer.index.admin'),
-                'discription' => "Nhân viên ".$hrtransfer->employee->full_name ." của chi nhánh bạn đã được được điều động qua chi nhánh "
+                'description' => "Nhân viên ".$hrtransfer->employee->full_name ." của chi nhánh bạn đã được được điều động qua chi nhánh "
                 .$hrtransfer->newBranch->branch_name ." để làm việc",
             ]);
             notification::create([
@@ -76,14 +76,14 @@ class hrtransferController extends Controller
                 'name' => "Điều động nhân sự",
                 'branch_id' => $hrtransfer->new_branch,
                 'url' => route('hrtransfer.index.admin'),
-                'discription' => "Yêu cầu điều động nhân sự của chi nhánh bạn đã được phê duyệt và nhân viên ".$hrtransfer->employee->full_name
+                'description' => "Yêu cầu điều động nhân sự của chi nhánh bạn đã được phê duyệt và nhân viên ".$hrtransfer->employee->full_name
                 ." sẽ làm việc ở đây từ ngày " .$hrtransfer->transfer_date,
             ]);
             notification::create([
                 'role_id' => 4,
                 'name' => "Điều động nhân sự",
                 'employee_id' => $hrtransfer->employee_id,
-                'discription' => "Bạn đã được điều động qua chi nhánh ".$hrtransfer->newBranch->branch_name ." để làm việc",
+                'description' => "Bạn đã được điều động qua chi nhánh ".$hrtransfer->newBranch->branch_name ." để làm việc",
             ]);
             return redirect()->route('hrtransfer.index.admin');
         }
@@ -104,7 +104,7 @@ class hrtransferController extends Controller
                 'role_id' => 2,
                 'name' => "Điều động nhân sự",
                 'url' => route('hrtransfer.index.admin'),
-                'discription' => "Chi nhánh ".$hrtransfer->newBranch->branch_name ." đã yêu cầu điều động nhận sự với lý do "
+                'description' => "Chi nhánh ".$hrtransfer->newBranch->branch_name ." đã yêu cầu điều động nhận sự với lý do "
                 .$hrtransfer->reason,
             ]);
             return redirect()->route('hrtransfer.index.admin');

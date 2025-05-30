@@ -16,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="page-header-title">
                         <h2 class="mb-2">Danh sách khách hàng</h2>
-                        @if (Auth::user()->hasPermissionOnPage('3', '9'))
+                        @if (Auth::user()->hasPermissionOnPage('1', '8'))
                             <button data-bs-toggle="modal" data-bs-target="#addCustomer"
                                 class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add
                                 new
@@ -66,7 +66,7 @@
                                     @endif
                                     <th>Chức năng</th>
 
-                                    @if (Auth::user()->hasPermissionOnPage('9', '9'))
+                                    @if (Auth::user()->hasPermissionOnPage('7', '8'))
                                         <th>Chốt deal</th>
                                     @endif
                                 </tr>
@@ -85,21 +85,21 @@
                                             <th>{{ $it->employee->full_name }}</th>
                                         @endif
                                         <td>
-                                            @if (Auth::user()->hasPermissionOnPage('5', '9'))
+                                            @if (Auth::user()->hasPermissionOnPage('3', '8'))
                                                 <a href="#" class="avtar avtar-show avtar-xs btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-eye"></i></a>
                                             @endif
-                                            @if (Auth::user()->hasPermissionOnPage('4', '9'))
+                                            @if (Auth::user()->hasPermissionOnPage('2', '8'))
                                                 <a href="#" class="avtar avtar-edit avtar-xs btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-user-edit"></i></a>
                                             @endif
-                                            @if (Auth::user()->hasPermissionOnPage('6', '9'))
+                                            @if (Auth::user()->hasPermissionOnPage('4', '8'))
                                                 <a href="#" class="avtar avtar-delete avtar-xs btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-trash"></i></a>
                                             @endif
                                         </td>
                                         <td>
-                                            @if (Auth::user()->hasPermissionOnPage('9', '9'))
+                                            @if (Auth::user()->hasPermissionOnPage('7', '8'))
                                                 <a href="#" class="avtar avtar-lg avtar-deal btn-link-secondary"
                                                     data-id="{{ $it->id }}"><i class="fas fa-handshake"></i></a>
                                             @endif

@@ -9,15 +9,20 @@ use App\Models\employee_performance_reviews;
 use App\Models\WorkPerformance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class evaluationAndRewardsController extends Controller
 {
     public function index(Request $request)
     {
-        $month = $request->month ? Carbon::createFromFormat('Y-m', $request->month)->format('m') : now()->month;
-        $year = $request->month ? Carbon::createFromFormat('Y-m', $request->month)->format('Y') : now()->year;
-        $performance = WorkPerformance::with('employee', 'performance_review');
+        $startDate = Carbon::createFromFormat('Y-m', $request->start_month ?? now()->format('Y-m'))->startOfMonth()->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m', $request->end_month ?? now()->format('Y-m'))->endOfMonth()->endOfDay();
+        $performance = WorkPerformance::with('employee', 'performance_review')->whereBetween('created_at', [$startDate, $endDate]);
+
+        if (Auth::user()->role_id != 1) {
+            $performance->where('employee_id', Auth::user()->employee_id);
+        }
 
         if ($request->full_name) {
             $performance->whereHas('employee', function ($query) use ($request) {
@@ -37,15 +42,11 @@ class evaluationAndRewardsController extends Controller
             });
         }
 
-        if ($request->month) {
-            $performance->whereMonth('created_at', $month);
-            $performance->whereYear('created_at', $year);
-        }
-
         $performance = $performance->orderBy('created_at', 'desc')->paginate(10);
         $branch = Branch::where('status', 1)->get();
         return view('evaluation.index', compact('performance', 'branch'));
     }
+    
     public function create(Request $request)
     {
         $work_performance = WorkPerformance::find($request->work_performance_id);
@@ -53,12 +54,6 @@ class evaluationAndRewardsController extends Controller
         if (!$work_performance) {
             return redirect()->back()->with('error', 'Hiệu suất làm việc không tồn tại');
         }
-        $total_revenue = intval(preg_replace('/\D/', '', $request->total_revenue));
-
-        $work_performance->update([
-            'total_project' => $request->total_project,
-            'total_revenue' => $total_revenue,
-        ]);
 
         if ($request->attendance_score && $request->quality_score) {
             try {
@@ -71,15 +66,15 @@ class evaluationAndRewardsController extends Controller
                     $request->problem_solving_score,
                 ];
 
-                $overall_score = array_sum($scores) / count(array_filter($scores, fn($score) => $score !== null));
+                $overall_score = array_sum($scores) / 4;
 
                 employee_performance_reviews::create([
                     "work_performance_id" => $work_performance->id,
                     'date' => now()->format('Y-m-d'),
-                    "attendance_score" => $request->attendance_score,
-                    "quality_score" => $request->quality_score,
-                    "productivity_score" => $request->productivity_score,
-                    "problem_solving_score" => $request->problem_solving_score,
+                    "attendance_score" => $request->attendance_score ?? 0,
+                    "quality_score" => $request->quality_score ?? 0,
+                    "productivity_score" => $request->productivity_score ?? 0,
+                    "problem_solving_score" => $request->problem_solving_score ?? 0,
                     "overall_score" => $overall_score,
                     "evaluation_result" => $request->evaluation_result,
                     "reward" => $request->reward,
@@ -93,8 +88,9 @@ class evaluationAndRewardsController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Cập nhật hiệu suất thành công');
+        return redirect()->back()->with('error', 'Có lỗi xảy ra');
     }
+
     public function update(Request $request, $id)
     {
         $work_performance = WorkPerformance::find($id);
@@ -102,13 +98,6 @@ class evaluationAndRewardsController extends Controller
         if (!$work_performance) {
             return redirect()->back()->with('error', 'Hiệu suất làm việc không tồn tại');
         }
-
-        $total_revenue = intval(preg_replace('/\D/', '', $request->total_revenue));
-
-        $work_performance->update([
-            'total_project' => $request->total_project,
-            'total_revenue' => $total_revenue,
-        ]);
 
         if ($work_performance->performance_review) {
             try {

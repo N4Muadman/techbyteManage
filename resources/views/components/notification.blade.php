@@ -20,7 +20,7 @@
                         </svg></div>
                     <div class="flex-grow-1 ms-3"><span class="float-end text-sm text-muted"></span>
                         <h5 class="text-body mb-2">{{ $it->name }}</h5>
-                        <p class="mb-0">{{ $it->discription }}</p>
+                        <p class="mb-0">{{ $it->description }}</p>
                     </div>
                 </div>
             </div>

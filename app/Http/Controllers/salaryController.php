@@ -22,10 +22,11 @@ class salaryController extends Controller
         $user = Auth::user();
 
         $salaryQuery = salary::with('employee.branch');
-        $monthStart = $request->date ? Carbon::createFromFormat('Y-m', $request->date)->startOfMonth() : Carbon::now()->startOfMonth();
-        $monthEnd = $request->date ? Carbon::createFromFormat('Y-m', $request->date)->endOfMonth() : Carbon::now()->endOfMonth();
 
-        $salaryQuery->whereBetween('salary_date', [$monthStart, $monthEnd]);
+        $startDate = Carbon::createFromFormat('Y-m', $request->start_month ?? now()->format('Y-m'))->startOfMonth()->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m', $request->end_month ?? now()->format('Y-m'))->endOfMonth()->endOfDay();
+
+        $salaryQuery->whereBetween('salary_date', [$startDate, $endDate]);
 
         if ($user->role_id != 1) {
             $salaryQuery->where('employee_id', $user->employee_id);
@@ -94,7 +95,8 @@ class salaryController extends Controller
         return redirect()->back()->with(['success', 'Sửa lương cho nhân viên thành công']);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $salary = salary::find($id);
 
         if (!$salary) {

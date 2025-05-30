@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\role;
 use App\Models\RolePagePermission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PermissionController extends Controller
 {
@@ -31,6 +32,8 @@ class PermissionController extends Controller
             $role_page_permissions->update([
                 'status' => $role_page_permissions->status == 0 ? 1 : 0,
             ]);
+
+            Cache::flush();
 
             return response()->json(['message' => 'Thay đổi trạng thái thành công'], 200);
         }catch(\Exception $e){

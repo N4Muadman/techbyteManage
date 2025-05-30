@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\LateArrivalViolationNotice;
 use App\Models\Employee;
+use App\Models\Project;
 use App\Models\salary;
 use App\Models\WorkPerformance;
 use Illuminate\Console\Command;
@@ -38,17 +39,27 @@ class SalaryCalculation extends Command
 
         $attendances = DB::table('attendance as a')
             ->join('work_shift as w', 'a.work_schedule_id', '=', 'w.id')
-            ->select('a.employee_id')
-            ->selectRaw('SUM(a.working_hours) AS total_hours_worked')
-            ->selectRaw('COUNT(CASE WHEN TIME(a.check_in) > w.start_time THEN 1 END) AS total_late_arrivals')
-            ->selectRaw('SUM(CASE WHEN TIME(a.check_in) > w.start_time THEN TIME_TO_SEC(TIMEDIFF(a.check_in, w.start_time)) / 3600 ELSE 0 END) AS total_late_hours')
+            ->select(
+                'a.employee_id',
+                DB::raw('SUM(a.working_hours) AS total_hours_worked'),
+                DB::raw('COUNT(CASE WHEN TIME(a.check_in) > w.start_time THEN 1 END) AS total_late_arrivals'),
+                DB::raw('SUM(CASE WHEN TIME(a.check_in) > w.start_time THEN TIME_TO_SEC(TIMEDIFF(a.check_in, w.start_time)) / 3600 ELSE 0 END) AS total_late_hours')
+            )
             ->whereMonth('a.date', $currentMonth)
             ->whereYear('a.date', $currentYear)
             ->groupBy('a.employee_id')
             ->get();
 
         $employeeIds = $attendances->pluck('employee_id')->toArray();
-        $employees = Employee::whereIn('id', $employeeIds)->whereNull('end_date')->get()->keyBy('id');
+        $employees = Employee::with('user')->whereIn('id', $employeeIds)->whereNull('end_date')->get()->keyBy('id');
+
+        $projects = Project::with(['members', 'tasks'])
+            ->whereMonth('end_date', $currentMonth)
+            ->whereYear('end_date', $currentYear)
+            ->get()
+            ->filter(function ($project) {
+                return $project->progress == 100;
+            });
 
         try {
             $salaries = [];
@@ -59,6 +70,11 @@ class SalaryCalculation extends Command
                 if (!$employee || !$employee->base_salary) {
                     continue;
                 }
+
+                $projectOfEmployee = $projects->filter(function ($project) use ($employee) {
+                    return $project->leader_id == $employee->user->id ||
+                        $project->members->contains('user_id', $employee->user->id);
+                });
 
                 $salaries[] = [
                     'employee_id' => $employee->id,
@@ -80,17 +96,17 @@ class SalaryCalculation extends Command
                     'total_work' => $attendance->total_hours_worked,
                     'total_late_arrivals' => $attendance->total_late_arrivals,
                     'total_late_hours' => $attendance->total_late_hours,
-                    'total_project' => 0,
-                    'total_revenue' => 0,
+                    'total_project' => $projectOfEmployee->count(),
+                    'total_revenue' => $projectOfEmployee->sum('total_cost'),
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
 
-                if ($attendance->total_late_hours > 1) {
-                    $type = 'Tháng này';
-                    Mail::to($employee->email)->send(new LateArrivalViolationNotice($employee, $attendance->total_late_hours, $attendance->total_late_arrivals, $type));
+                if ($attendance->total_late_hours > 1 && !empty($employee->email)) {
+                    Mail::to($employee->email)->send(new LateArrivalViolationNotice($employee, $attendance->total_late_hours, $attendance->total_late_arrivals, 'Tháng này'));
                 }
             }
+
             salary::insert($salaries);
             WorkPerformance::insert($performances);
 
