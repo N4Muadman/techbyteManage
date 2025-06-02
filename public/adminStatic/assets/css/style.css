@@ -24720,7 +24720,7 @@ pre[class*=language-] {
 .user-group .avtar+img,
 .user-group img+.avtar,
 .user-group img+img {
-    margin-left: -14px
+    margin-left: 0px
 }
 
 .user-group .avtar:hover,
@@ -26372,8 +26372,8 @@ pre[class*=language-] {
 }
 
 .able-user-group .avtar {
-    width: 30px;
-    height: 30px
+    width: 40px;
+    height: 40px
 }
 
 .table-body.card-body,

@@ -22,7 +22,7 @@ class ProjectController extends Controller
         $projects = $this->projectService->getAll($request)->orderByDesc('created_at')->paginate(10);
 
         $userEmployees = User::with(['employee' => fn($query) => $query->orderBy('full_name')])
-            ->where('role_id', '!=', 1)->get();
+            ->where('role_id', '!=', 1)->whereNull('deleted_at')->get();
 
         return view('project.index', compact('projects', 'userEmployees'));
     }

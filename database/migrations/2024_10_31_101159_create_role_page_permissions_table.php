@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('role_id');
             $table->unsignedBigInteger('page_permission_id');
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
     }

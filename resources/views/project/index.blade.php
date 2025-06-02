@@ -717,7 +717,7 @@
 
                     if (id) {
                         document.getElementById('form-add-project-member').action =
-                            '{{ route('projects.add-member', 'id') }}'.replace('id', id);
+                            '{{ route('projects.add-member', ':id') }}'.replace(':id', id);
                     }
 
                     document.getElementById('name-project-add-member').innerText = element.dataset
@@ -754,7 +754,7 @@
                 const id = element.dataset.id;
                 if (id) {
                     document.getElementById('form-add-project-task').action =
-                        '{{ route('project_tasks.store', 'id') }}'.replace('id', id);
+                        '{{ route('project_tasks.store', ':id') }}'.replace(':id', id);
                 }
             }
 
