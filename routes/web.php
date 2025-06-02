@@ -47,7 +47,9 @@ Route::middleware('is_admin')->prefix('admin')->group(function () {
         Route::get('/chinh-sua-nhan-vien/{id}', [employeeController::class, 'edit'])->name('employee.edit.admin');
         Route::post('/empower/{id}', [employeeController::class, 'empower'])->name('employee.empower.admin');
     });
+
     Route::get('/thong-tin-ca-nhan', [employeeController::class, 'profile'])->name('employee.profile.admin');
+    Route::put('/thong-tin-ca-nhan', [employeeController::class, 'updateProfile'])->name('employee.profile.update');
 
 
     Route::middleware('is_access:2,3,4')->prefix('quan-ly-tien-luong')->group(function () {

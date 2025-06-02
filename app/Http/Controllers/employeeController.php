@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class employeeController extends Controller
 {
@@ -145,12 +146,55 @@ class employeeController extends Controller
         $employee = Employee::with(['branch', 'salary', 'user'])
             ->where('id', $id)->whereNull('end_date')->first();
 
-        $salary = salary::where('employee_id', $id)->where('salary_date', date('Y-m-d'))->first();
         if (!$employee) {
             return abort(404);
         }
-        return view('employee.profile', compact('employee', 'salary'));
+
+        return view('employee.profile', compact('employee'));
     }
+
+    public function updateProfile(Request $request)
+    {
+        $employee_id = Auth::user()->employee_id;
+
+        $data = $request->validate([
+            'full_name'     => 'required|string|max:255',
+            'email'         => 'required|email|unique:employee,email,' . $employee_id,
+            'phone_number'  => 'required|string|max:20',
+            'date_of_birth' => 'required|date',
+            'gender'        => 'required|in:Nam,Nữ',
+            'avatar'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp'
+        ]);
+
+        $employee = Employee::find($employee_id);
+
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Nhân viên không tồn tại');
+        }
+
+        try {
+            if (!empty($data['avatar'])) {
+                $avatar = $data['avatar'];
+
+                $avatarPath = $avatar->store('avatars', 'public');
+
+                if ($employee->avatar && Storage::disk('public')->exists($employee->avatar)) {
+                    Storage::disk('public')->delete($employee->avatar);
+                }
+
+                $data['avatar'] = $avatarPath;
+            } else {
+                $data['avatar'] = $employee->avatar;
+            }
+
+            $employee->update($data);
+
+            return redirect()->back()->with('success', 'Cập nhật thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật');
+        }
+    }
+
     public function empower(Request $request, $id)
     {
         $user = User::where('employee_id', $id)->first();
@@ -158,7 +202,7 @@ class employeeController extends Controller
             $user->update([
                 'role_id' => $request->role_id,
             ]);
-            
+
             Cache::forget('user_permissions_' . $user->id);
             return redirect()->back()->with(['success' => 'Phân quyền nhân viên thành công']);
         }

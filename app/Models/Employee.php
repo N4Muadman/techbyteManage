@@ -23,7 +23,8 @@ class Employee extends Model
         "position",
         'base_salary',
         "branch_id",
-        "profile"
+        "profile",
+        "avatar"
     ];
 
     // Định nghĩa quan hệ với bảng `Attendance`

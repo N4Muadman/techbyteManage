@@ -29,9 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Schedule $schedule): void
     {
-        $schedule->command(SalaryCalculation::class)->dailyAt('19:00')->when(function () {
-            return now()->addDay()->day == 1;
-        });
+        $schedule->command(SalaryCalculation::class)->lastDayOfMonth('19:00');
 
         $schedule->command(BirthdayNotification::class)->dailyAt('07:00');
 
