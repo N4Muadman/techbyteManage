@@ -52,13 +52,15 @@
 
 <body>
     @php
-        function formatHour($totalHours)
-        {
-            $hours = floor($totalHours);
-            // Tính phần phút
-            $minutes = ($totalHours - $hours) * 60;
-            $minutes = round($minutes);
-            return $hours . ' giờ ' . $minutes . ' phút';
+        if (!function_exists('formatHour')) {
+            function formatHour($totalHours)
+            {
+                $hours = floor($totalHours);
+                // Tính phần phút
+                $minutes = ($totalHours - $hours) * 60;
+                $minutes = round($minutes);
+                return $hours . ' giờ ' . $minutes . ' phút';
+            }
         }
     @endphp
     <div class="email-container">
@@ -67,7 +69,8 @@
         <p>Xin chào <strong>{{ $employee->full_name }}</strong>,</p>
 
         <p>Bộ phận Nhân sự ghi nhận bạn đã vi phạm quy định về giờ làm việc của công ty trong
-            <strong>{{ $type }}</strong>.</p>
+            <strong>{{ $type }}</strong>.
+        </p>
 
         <div class="summary">
             <p><strong>Tổng số lần đi muộn:</strong> {{ $totalLateTimes }} lần</p>

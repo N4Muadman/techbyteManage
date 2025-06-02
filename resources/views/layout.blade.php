@@ -63,7 +63,7 @@
                 <div class="card pc-user-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0"><img src="{{ $employee->avatar ? '/storage/' .$employee->avatar :'/images/avatar.jpg' }}" alt="user-image"
+                            <div class="flex-shrink-0"><img src="{{ Auth::user()->avatar ? '/storage/' .Auth::user()->avatar :'/images/avatar.jpg' }}" alt="user-image"
                                     class="user-avtar wid-45 rounded-circle"></div>
                             <div class="flex-grow-1 ms-3 me-2">
                                 <h6 class="mb-0">{{ Auth::user()->employee->full_name }}</h6><small>Vai trò:
@@ -132,7 +132,7 @@
                     <li class="dropdown pc-h-item header-user-profile"><a
                             class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                             href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
-                            aria-expanded="false"><img src="{{ $employee->avatar ? '/storage/' .$employee->avatar :'/images/avatar.jpg' }}" alt="user-image"
+                            aria-expanded="false"><img src="{{ Auth::user()->avatar ? '/storage/' .Auth::user()->avatar :'/images/avatar.jpg' }}" alt="user-image"
                                 class="user-avtar"></a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header d-flex align-items-center justify-content-between">
@@ -142,7 +142,7 @@
                                 <div class="profile-notification-scroll position-relative"
                                     style="max-height: calc(100vh - 225px)">
                                     <div class="d-flex mb-1">
-                                        <div class="flex-shrink-0"><img src="{{ $employee->avatar ? '/storage/' .$employee->avatar :'/images/avatar.jpg' }}"
+                                        <div class="flex-shrink-0"><img src="{{ Auth::user()->avatar ? '/storage/' .Auth::user()->avatar :'/images/avatar.jpg' }}"
                                                 alt="user-image" class="user-avtar wid-35"></div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1">{{ Auth::user()->employee->full_name }} 🖖</h6><span>
