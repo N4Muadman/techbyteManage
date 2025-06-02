@@ -116,7 +116,7 @@
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $hrtransfer->links('pagination::bootstrap-5') }}
+                            {{ $hrtransfer->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>

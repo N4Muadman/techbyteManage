@@ -130,7 +130,7 @@
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $employee->links('pagination::bootstrap-5') }}
+                            {{ $employee->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>

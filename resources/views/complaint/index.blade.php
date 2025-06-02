@@ -80,7 +80,7 @@
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $complaint->links('pagination::bootstrap-5') }}
+                            {{ $complaint->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>

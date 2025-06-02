@@ -125,7 +125,7 @@
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $performance->links('pagination::bootstrap-5') }}
+                            {{ $performance->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>

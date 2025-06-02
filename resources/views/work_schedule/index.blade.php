@@ -115,7 +115,7 @@
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $work_schedule->links('pagination::bootstrap-5') }}
+                            {{ $work_schedule->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>

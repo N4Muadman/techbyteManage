@@ -107,7 +107,7 @@
                             </tbody>
                         </table>
                         <div class="ps-5 pe-5">
-                            {{ $customers->links('pagination::bootstrap-5') }}
+                            {{ $customers->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>
