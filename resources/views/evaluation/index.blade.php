@@ -73,6 +73,7 @@
                                     <th>Tổng giờ đi muộn</th>
                                     <th>Tổng dự án</th>
                                     <th>Tổng doanh thu</th>
+                                    <th>Thời gian</th>
                                     <th>Chức năng / khen thưởng</th>
                                 </tr>
                             </thead>
@@ -98,6 +99,7 @@
                                         <td class="text-danger">{{ formatHour($it->total_late_hours) }}</td>
                                         <td>{{ $it->total_project ?? 0 }}</td>
                                         <td>{{ number_format($it->total_revenue) . ' đ' }}</td>
+                                        <td>{{ $it->created_at->format('m-Y') }}</td>
                                         @if (!$it->performance_review)
                                             <td>
                                                 @if (Auth::user()->hasPermissionOnPage('1', '7'))
