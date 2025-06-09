@@ -121,7 +121,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 @if ($project->leader)
                                     <div class="user-group able-user-group">
-                                        <img src="{{ $project->leader?->employee?->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                        <img src="{{ $project->leader?->employee?->avatar ? '/storage/' .$project->leader->employee->avatar : '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                             alt="user-image" title="{{ $project->leader?->employee?->full_name }}"
                                             class="avtar" data-bs-toggle="tooltip">
                                         {{-- <span class="avtar bg-light-primary text-primary text-sm">+2</span> --}}
@@ -142,7 +142,7 @@
                                 <div class="user-group able-user-group">
 
                                     @foreach ($project->members as $member)
-                                        <img src="{{ $member->user?->employee?->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                        <img src="{{ $member->user?->employee?->avatar ? '/storage/'. $member->user->employee->avatar : '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                             alt="user-image" class="avtar"
                                             title="{{ $member->user?->employee?->full_name }}" data-bs-toggle="tooltip">
                                     @endforeach

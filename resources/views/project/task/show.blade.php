@@ -46,7 +46,7 @@
                                 @endphp
                                 <div class="d-flex align-items-center">
                                     <div class="user-group me-2">
-                                        <img src="{{ $employee->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                        <img src="{{ $employee->avatar ? '/storage/' .$employee->avatar : '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                             alt="user-image" class="avtar">
                                     </div>
                                     <div>
@@ -88,7 +88,7 @@
                                 <small class="text-muted">Quản lý dự án</small>
                                 <div class="d-flex align-items-center mt-1">
                                     <div class="user-group me-2">
-                                        <img src="{{ $task->project->leader?->employee?->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                        <img src="{{ $task->project->leader?->employee?->avatar ? $task->project->leader->employee->avatar : '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                             alt="user-image">
                                     </div>
                                     <div>

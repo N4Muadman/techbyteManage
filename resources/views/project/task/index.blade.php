@@ -114,7 +114,7 @@
                                             <span class="me-2 text-muted">Thành viên:</span>
                                             <div class="user-group able-user-group">
                                                 @foreach ($task->members as $member)
-                                                    <img src="{{ $member->user?->employee?->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                                    <img src="{{ $member->user?->employee?->avatar ? '/storage/' .$member->user->employee->avatar: '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                                         alt="user-image" class="avtar" data-bs-toggle="tooltip"
                                                         title="{{ $member->user?->employee?->full_name }}">
                                                 @endforeach

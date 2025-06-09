@@ -38,7 +38,7 @@
                         <h6 class="text-muted mb-2">Quản lý dự án</h6>
                         <div class="d-flex align-items-center mt-1">
                             <div class="user-group me-2">
-                                <img src="{{ $project->leader?->employee?->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                <img src="{{ $project->leader?->employee?->avatar ? '/storage/' .$project->leader->employee->avatar : '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                     alt="user-image">
                             </div>
                             <div>
@@ -62,7 +62,7 @@
                                 @endphp
                                 <div class="d-flex align-items-center">
                                     <div class="user-group me-2">
-                                        <img src="{{ $employee->avatar ?? '/adminStatic/assets/images/user/avatar-1.jpg' }}"
+                                        <img src="{{ $employee->avatar ? '/storage/' .$employee->avatar : '/adminStatic/assets/images/user/avatar-1.jpg' }}"
                                             alt="user-image" class="avtar">
                                     </div>
                                     <div>
