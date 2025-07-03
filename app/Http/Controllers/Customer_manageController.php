@@ -180,8 +180,7 @@ class Customer_manageController extends Controller
             ]);
 
             $customer->update([
-                'type' => 1,
-                'business_customer_since' => now()
+                'type' => 1
             ]);
 
             DB::commit();

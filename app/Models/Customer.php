@@ -17,8 +17,7 @@ class Customer extends Model
         'date_find_to_me',
         'object',
         'employee_id',
-        'type',
-        'business_customer_since'
+        'type'
     ];
 
     public function employee(){
