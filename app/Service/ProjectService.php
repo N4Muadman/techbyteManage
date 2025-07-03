@@ -2,12 +2,14 @@
 
 namespace App\Service;
 
+use App\Mail\SendEmployeeJoinProject;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectService
 {
@@ -62,11 +64,14 @@ class ProjectService
             $user = User::findOrFail($project->leader_id);
 
             if ($user) {
+                Mail::to($user->employee?->email)->send(new SendEmployeeJoinProject($user->employee, $project, 'Leader'));
                 $user->update(['role_id', 6]);
                 Cache::forget('user_permissions_' . $user->id);
             }
 
-            $project->members()->createMany($membersData);
+            $members = $project->members()->createMany($membersData);
+
+            $this->handleSendEmailMembers($members, $project);
         });
     }
 
@@ -75,7 +80,9 @@ class ProjectService
         DB::transaction(function () use ($data, $id) {
             $project = Project::findOrFail($id);
 
-            $project->members()->createMany($this->handleMemberData($data['project_members']));
+            $members = $project->members()->createMany($this->handleMemberData($data['project_members']));
+
+            $this->handleSendEmailMembers($members, $project);
         });
     }
 
@@ -83,6 +90,7 @@ class ProjectService
     {
         DB::transaction(function () use ($data, $id) {
             $project = Project::findOrFail($id);
+            $old_leader_id = $project->leader_id;
 
             $newMembersData = $this->handleMemberData($data['project_members']);
 
@@ -92,11 +100,14 @@ class ProjectService
 
             $project->update($data);
 
-            $user = User::findOrFail($project->leader_id);
+            if ($old_leader_id != $project->leader_id) {
+                $user = User::with('employee')->findOrFail($project->leader_id);
 
-            if ($user) {
-                $user->update(['role_id' => 6]);
-                Cache::forget('user_permissions_' . $user->id);
+                if ($user) {
+                    Mail::to($user->employee?->email)->send(new SendEmployeeJoinProject($user->employee, $project, 'Leader'));
+                    $user->update(['role_id' => 6]);
+                    Cache::forget('user_permissions_' . $user->id);
+                }
             }
 
             $this->syncProjectMembers($project, $newMembersData);
@@ -116,7 +127,9 @@ class ProjectService
         });
 
         if (!empty($membersToCreate)) {
-            $project->members()->createMany($membersToCreate);
+            $members = $project->members()->createMany($membersToCreate);
+
+            $this->handleSendEmailMembers($members, $project);
         }
     }
 
@@ -132,5 +145,14 @@ class ProjectService
             fn($member) => ['user_id' => (int)($member['value'] ?? 0)],
             $projectMembers
         );
+    }
+
+    public function handleSendEmailMembers($members, $project)
+    {
+        foreach ($members as $member) {
+            $member->load('user.employee');
+
+            Mail::to($member->user?->email)->send(new SendEmployeeJoinProject($member->user?->employee, $project));
+        }
     }
 }

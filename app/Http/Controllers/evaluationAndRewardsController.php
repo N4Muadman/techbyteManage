@@ -16,8 +16,8 @@ class evaluationAndRewardsController extends Controller
 {
     public function index(Request $request)
     {
-        $startDate = Carbon::createFromFormat('Y-m', $request->start_month ?? now()->format('Y-m'))->startOfMonth()->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m', $request->end_month ?? now()->format('Y-m'))->endOfMonth()->endOfDay();
+        $startDate = Carbon::createFromFormat('Y-m', $request->start_month ?? now()->subMonth()->format('Y-m'))->startOfMonth()->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m', $request->end_month ?? now()->subMonth()->format('Y-m'))->endOfMonth()->endOfDay();
         $performance = WorkPerformance::with('employee', 'performance_review')->whereBetween('created_at', [$startDate, $endDate]);
 
         if (Auth::user()->role_id != 1) {
@@ -46,7 +46,7 @@ class evaluationAndRewardsController extends Controller
         $branch = Branch::where('status', 1)->get();
         return view('evaluation.index', compact('performance', 'branch'));
     }
-    
+
     public function create(Request $request)
     {
         $work_performance = WorkPerformance::find($request->work_performance_id);

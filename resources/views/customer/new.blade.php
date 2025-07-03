@@ -107,7 +107,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <p class="text-center">không có khách hàng nào</p>
+                                        <td colspan="10">
+                                            <p class="text-center">không có khách hàng nào</p>
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -132,36 +134,48 @@
                     <form action="{{ route('createCustomer') }}" method="post">
                         @csrf
                         <div class="mb-3">
-                            <label for="" class="form-lable">Họ và tên</label>
-                            <input type="text" name="full_name" class="form-control" placeholder="Nhập họ tên" required>
+                            <label for="" class="form-lable @error('full_name') text-danger @enderror">Họ và
+                                tên</label>
+                            <input type="text" name="full_name"
+                                class="form-control @error('full_name') border-danger @enderror" placeholder="Nhập họ tên"
+                                required value="{{old('full_name')}}">
+                            @error('full_name')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="" class="form-lable">Giới tính</label>
+                            <label for="" class="form-lable ">Giới tính</label>
                             <select class="form-select" name="gender">
-                                <option value="Nam">Nam</option>"
-                                <option value="Nữ">Nữ</option>"
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="" class="form-lable">SDT</label>
-                            <input type="text" name="phone_number" class="form-control" placeholder="Số điện thoại"
-                                required>
+                            <label for="" class="form-lable @error('phone_number') text-danger @enderror">SDT</label>
+                            <input type="text" name="phone_number" class="form-control @error('phone_number') border-danger @enderror" placeholder="Số điện thoại"
+                                required value="{{old('phone_number')}}">
+                            @error('phone_number')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="" class="form-lable">Email</label>
-                            <input type="text" name="email" class="form-control" placeholder="Nhập email" required>
+                            <label for="" class="form-lable @error('email') text-danger @enderror">Email</label>
+                            <input type="text" name="email" class="form-control @error('email') border-danger @enderror" placeholder="Nhập email" required  value="{{old('email')}}">
+                            @error('email')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-lable">Ngày tìm tới mình</label>
-                            <input type="date" name="date_find_to_me" class="form-control" required>
+                            <input type="date" name="date_find_to_me" class="form-control" required value="{{old('date_find_to_me')}}">
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-lable">Đối tượng</label>
                             <input type="text" name="object" class="form-control"
-                                placeholder="VD: Sinh viên, doanh nghiệp, chủ đầu tư,..." required>
+                                placeholder="VD: Sinh viên, doanh nghiệp, chủ đầu tư,..." required value="{{old('object')}}">
                         </div>
                         <div class="mb-3">
-                            <label for="" class="form-lable">Mạng xã hội</label>
+                            <label for="" class="form-lable ">Mạng xã hội</label>
                             <select class="form-select" name="social_network" required>
                                 <option value="Facebook">Facebook</option>
                                 <option value="Tiktok">Tiktok</option>
@@ -422,7 +436,7 @@
                                 submitButton.disabled = true; // Vô hiệu hóa nút Chốt
                             } else {
                                 document.getElementById('error-advance').innerText =
-                                ''; // Xóa thông báo lỗi nếu điều kiện không thỏa
+                                    ''; // Xóa thông báo lỗi nếu điều kiện không thỏa
                                 submitButton.disabled = false; // Kích hoạt lại nút Chốt
                             }
                         });

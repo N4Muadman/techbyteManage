@@ -33,6 +33,7 @@ Route::post('admin/login', [LoginController::class, 'login'])->name('login');
 Route::get('admin/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('download-file-employee-must-reading', [LoginController::class, 'download'])->name('download-file');
 
+    Route::get('thong-ke-khach-hang-doanh-nghiep', [Customer_manageController::class, 'BusinessCustomerStatistics'])->name('businessCustomerStatistics');
 Route::middleware('is_admin')->prefix('admin')->group(function () {
     Route::get('home', function () {
         return view('home.banner');
@@ -102,6 +103,7 @@ Route::middleware('is_admin')->prefix('admin')->group(function () {
 
     Route::get('khach-hang-doanh-nghiep', [Customer_manageController::class, 'businessCustomer'])->middleware('is_access:10,2,3,4,8')->name('businessCustomer');
     Route::get('thong-ke-doanh-nghiep', [Customer_manageController::class, 'businessStatistics'])->middleware('is_access:11,3')->name('businessStatistics');
+    Route::get('thong-ke-khach-hang-doanh-nghiep', [Customer_manageController::class, 'BusinessCustomerStatistics'])->middleware('is_access:11,3')->name('businessCustomerStatistics');
 
     Route::middleware('is_access:12,1,2,3,4')->group(function () {
         Route::resource('quan-ly-du-an', ProjectController::class)->names('projects')->parameters(['quan-ly-du-an' => 'project']);

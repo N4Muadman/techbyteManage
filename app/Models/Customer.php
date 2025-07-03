@@ -18,6 +18,7 @@ class Customer extends Model
         'object',
         'employee_id',
         'type',
+        'business_customer_since'
     ];
 
     public function employee(){

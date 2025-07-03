@@ -23,9 +23,8 @@ class salaryController extends Controller
 
         $salaryQuery = salary::with('employee.branch');
 
-        $startDate = Carbon::createFromFormat('Y-m', $request->start_month ?? now()->format('Y-m'))->startOfMonth()->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m', $request->end_month ?? now()->format('Y-m'))->endOfMonth()->endOfDay();
-
+        $startDate = Carbon::createFromFormat('Y-m', $request->start_month ?? now()->subMonth()->format('Y-m'))->startOfMonth()->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m', $request->end_month ?? now()->subMonth()->format('Y-m'))->endOfMonth()->endOfDay();
         $salaryQuery->whereBetween('salary_date', [$startDate, $endDate]);
 
         if ($user->role_id != 1) {

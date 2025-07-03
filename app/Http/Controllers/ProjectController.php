@@ -46,7 +46,7 @@ class ProjectController extends Controller
             return redirect()->back()->with('success', 'Tạo dự án thành công!');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withInput()->with('error', 'Có lỗi xảy ra, vui lòng thử lại.');
+                ->withInput()->with('error', 'Có lỗi xảy ra, vui lòng thử lại.' .$e->getMessage());
         }
     }
 

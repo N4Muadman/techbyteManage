@@ -80,6 +80,10 @@ class User extends Authenticatable
 
         return $this->id == $project_leader_id;
     }
+
+    public function getEmailAttribute(){
+        return $this->employee?->email ?? 'Không xác định';
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

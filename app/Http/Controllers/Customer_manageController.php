@@ -9,28 +9,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use PhpOffice\PhpSpreadsheet\Calculation\TextData\Format;
 
 class Customer_manageController extends Controller
 {
-    public function newCustomer(Request $request){
+    public function newCustomer(Request $request)
+    {
         $user = Auth::user();
         $customerQuery = Customer::with('employee')->where('type', 0);
 
-        if($user->role_id == 5){
+        if ($user->role_id == 5) {
             $customerQuery->where('employee_id', $user->employee_id);
         }
 
-        if($request->name){
-            $customerQuery->where('full_name', 'like' , '%' .$request->name .'%');
+        if ($request->name) {
+            $customerQuery->where('full_name', 'like', '%' . $request->name . '%');
         }
-        if($request->phone_number){
-            $customerQuery->where('phone_number', 'like' , '%' .$request->phone_number .'%');
+        if ($request->phone_number) {
+            $customerQuery->where('phone_number', 'like', '%' . $request->phone_number . '%');
         }
-        if($request->employee){
-            $customerQuery->whereHas('employee', function ($query) use ($request){
-                $query->where('full_name', 'like' , '%' .$request->employee .'%');
+        if ($request->employee) {
+            $customerQuery->whereHas('employee', function ($query) use ($request) {
+                $query->where('full_name', 'like', '%' . $request->employee . '%');
             });
         }
 
@@ -39,23 +38,24 @@ class Customer_manageController extends Controller
         return view('customer.new', compact('customers'));
     }
 
-    public function businessCustomer(Request $request){
+    public function businessCustomer(Request $request)
+    {
         $user = Auth::user();
         $customerQuery = Customer::with('employee')->where('type', 1);
 
-        if($user->role_id == 5){
+        if ($user->role_id == 5) {
             $customerQuery->where('employee_id', $user->employee->id);
         }
 
-        if($request->name){
-            $customerQuery->where('full_name', 'like' , '%' .$request->name .'%');
+        if ($request->name) {
+            $customerQuery->where('full_name', 'like', '%' . $request->name . '%');
         }
-        if($request->phone_number){
-            $customerQuery->where('phone_number', 'like' , '%' .$request->phone_number .'%');
+        if ($request->phone_number) {
+            $customerQuery->where('phone_number', 'like', '%' . $request->phone_number . '%');
         }
-        if($request->employee){
-            $customerQuery->whereHas('employee', function ($query) use ($request){
-                $query->where('full_name', 'like' , '%' .$request->name .'%');
+        if ($request->employee) {
+            $customerQuery->whereHas('employee', function ($query) use ($request) {
+                $query->where('full_name', 'like', '%' . $request->name . '%');
             });
         }
 
@@ -64,10 +64,11 @@ class Customer_manageController extends Controller
         return view('customer.business', compact('customers'));
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $customer = Customer::with('employee', 'contract')->find($id);
 
-        if (!$customer){
+        if (!$customer) {
             return response()->json([
                 'message' => 'Customer not found'
             ], 404);
@@ -78,15 +79,20 @@ class Customer_manageController extends Controller
         ], 200);
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $request->validate([
-            'full_name' => 'required',
-            'phone_number' => 'required',
-            'email' => 'required',
+            'full_name' => 'required|unique:customers,full_name',
+            'phone_number' => 'required|unique:customers,phone_number',
+            'email' => 'required|unique:customers,email',
             'gender' => 'required',
             'social_network' => 'required',
             'date_find_to_me' => 'required',
             'object' => 'required',
+        ], [
+            'full_name.unique' => 'Tên khách hàng đã có trong hệ thống',
+            'phone_number.unique' => 'Số điện thoại khách hàng đã có trong hệ thống',
+            'email.unique' => 'Email khách hàng đã có trong hệ thống',
         ]);
 
         Customer::create([
@@ -103,11 +109,12 @@ class Customer_manageController extends Controller
 
         return redirect()->back()->with('success', 'Thêm mới khách hàng thành công');
     }
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
-            'full_name' => 'required',
-            'phone_number' => 'required',
-            'email' => 'required',
+            'full_name' => 'required|unique:customers,full_name,'.$id,
+            'phone_number' => 'required|unique:customers,phone_number,'.$id,
+            'email' => 'required|unique:customers,email,'.$id,
             'gender' => 'required',
             'social_network' => 'required',
             'date_find_to_me' => 'required',
@@ -116,7 +123,7 @@ class Customer_manageController extends Controller
 
         $customer = Customer::find($id);
 
-        if (!$customer){
+        if (!$customer) {
             return redirect()->back()->with('error', 'Khách hàng không tồn tại!');
         }
 
@@ -133,10 +140,11 @@ class Customer_manageController extends Controller
         return redirect()->back()->with('success', 'Sửa khách hàng thành công');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $customer = Customer::find($id);
 
-        if (!$customer){
+        if (!$customer) {
             return redirect()->back()->with('error', 'Khách hàng không tồn tại!');
         }
 
@@ -145,7 +153,8 @@ class Customer_manageController extends Controller
         return redirect()->back()->with('success', 'Xóa khách hàng thành công');
     }
 
-    public function deal(Request $request, $id){
+    public function deal(Request $request, $id)
+    {
         $request->validate([
             'date' => 'required',
             'contract_code' => 'required',
@@ -154,7 +163,7 @@ class Customer_manageController extends Controller
         ]);
         $customer = Customer::find($id);
 
-        if (!$customer){
+        if (!$customer) {
             return redirect()->back()->with('error', 'Khách hàng không tồn tại!');
         }
         try {
@@ -172,20 +181,21 @@ class Customer_manageController extends Controller
 
             $customer->update([
                 'type' => 1,
+                'business_customer_since' => now()
             ]);
 
             DB::commit();
 
             return redirect()->back()->with('success', 'Chốt deal hợp đồng thành công');
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Có lỗi xảy ra!');
         }
     }
 
 
-    public function getFeedback($id){
+    public function getFeedback($id)
+    {
         $feedbacks = FeedBackCustomer::with('customer')->where('customer_id', $id)->get();
 
         return response()->json([
@@ -193,25 +203,23 @@ class Customer_manageController extends Controller
         ], 200);
     }
 
-    public function statistics(Request $request){
+    public function statistics(Request $request)
+    {
         $user = Auth::user();
-        $customerQuery = Customer::with('contract');
-
-        if($user->role_id == 5){
-            $customerQuery->where('employee_id', $user->employee->id);
-        }
 
         $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date ?? now()->startOfMonth()->format('Y-m-d'));
         $endDate = Carbon::createFromFormat('Y-m-d', $request->end_date ?? now()->endOfMonth()->format('Y-m-d'));
 
-        $totalCustomers = $customerQuery->count();
+        $customerQuery = Customer::with('contract');
 
-        $closedDeals = (clone $customerQuery)->where('type', 1)->whereHas('contract', function ($query) use ($startDate, $endDate){
-            $query->whereBetween('date', [$startDate, $endDate]);
-        })->count();
-        $notCloseds = (clone $customerQuery)->where('type', 0)->whereHas('contract', function ($query) use ($startDate, $endDate){
-            $query->whereBetween('date', [$startDate, $endDate]);
-        })->count();
+        if ($user->role_id == 5) {
+            $customerQuery->where('employee_id', $user->employee->id);
+        }
+
+        $totalCustomers = (clone $customerQuery)->whereBetween('date_find_to_me', [$startDate, $endDate])->count();
+
+        $closedDeals = (clone $customerQuery)->whereBetween('date_find_to_me', [$startDate, $endDate])->where('type', 1)->count();
+        $notCloseds = $totalCustomers - $closedDeals;
 
         $conversionRate = $totalCustomers > 0 ? ($closedDeals / $totalCustomers) * 100 : 0;
         $notClosedRate = $totalCustomers > 0 ? ($notCloseds / $totalCustomers) * 100 : 0;
@@ -226,31 +234,32 @@ class Customer_manageController extends Controller
             DB::raw("SUM(CASE WHEN social_network = 'Web' THEN 1 ELSE 0 END) as total_web"),
             DB::raw("SUM(CASE WHEN social_network = 'Được giới thiệu' THEN 1 ELSE 0 END) as total_referral")
         )->whereBetween('date_find_to_me', [$startDate, $endDate])
-        ->get()
-        ->map(function($data){
-            $tiktokRate = $data->total_customers > 0 ? ($data->total_tiktok / $data->total_customers) * 100 : 0;
-            $facebookRate = $data->total_customers > 0 ? ($data->total_facebook / $data->total_customers) * 100 : 0;
-            $youtubeRate = $data->total_customers > 0 ? ($data->total_youtube / $data->total_customers) * 100 : 0;
-            $webRate = $data->total_customers > 0 ? ($data->total_web / $data->total_customers) * 100 : 0;
-            $referralRate = $data->total_customers > 0 ? ($data->total_referral / $data->total_customers) * 100 : 0;
-            return [
-                'total_tiktok' => $data->total_tiktok,
-                'total_facebook' => $data->total_facebook,
-                'total_youtube' => $data->total_youtube,
-                'total_web' => $data->total_web,
-                'total_referral' => $data->total_referral,
-                'tiktok_rate' => $tiktokRate,
-                'facebook_rate' => $facebookRate,
-                'youtube_rate' => $youtubeRate,
-                'web_rate' => $webRate,
-                'referral_rate' => $referralRate,
-            ];
-        });
+            ->get()
+            ->map(function ($data) {
+                $tiktokRate = $data->total_customers > 0 ? ($data->total_tiktok / $data->total_customers) * 100 : 0;
+                $facebookRate = $data->total_customers > 0 ? ($data->total_facebook / $data->total_customers) * 100 : 0;
+                $youtubeRate = $data->total_customers > 0 ? ($data->total_youtube / $data->total_customers) * 100 : 0;
+                $webRate = $data->total_customers > 0 ? ($data->total_web / $data->total_customers) * 100 : 0;
+                $referralRate = $data->total_customers > 0 ? ($data->total_referral / $data->total_customers) * 100 : 0;
+                return [
+                    'total_tiktok' => $data->total_tiktok,
+                    'total_facebook' => $data->total_facebook,
+                    'total_youtube' => $data->total_youtube,
+                    'total_web' => $data->total_web,
+                    'total_referral' => $data->total_referral,
+                    'tiktok_rate' => $tiktokRate,
+                    'facebook_rate' => $facebookRate,
+                    'youtube_rate' => $youtubeRate,
+                    'web_rate' => $webRate,
+                    'referral_rate' => $referralRate,
+                ];
+            });
 
         return view('customer.statistics', compact('dealRate', 'socialNetworkRate'));
     }
 
-    public function uploadFeedback(Request $request){
+    public function uploadFeedback(Request $request)
+    {
         $request->validate([
             'feedbacks.*' => 'required|file|mimes:jpg,png,gif,jpeg,webp|max:2120',
             'customer_id' => 'required|integer'
@@ -274,10 +283,11 @@ class Customer_manageController extends Controller
         return redirect()->back()->with('error', 'Gửi phản hồi không thành công');
     }
 
-    public function debtContract(Request $request){
+    public function debtContract(Request $request)
+    {
         $contractQuery = Contract::with('customer.employee')->whereColumn('contract_value', '>', 'advance_money');
 
-        if(Auth::user()->role_id == 5){
+        if (Auth::user()->role_id == 5) {
             $contractQuery->where('customer_id', Auth::user()->employee_id);
         }
 
@@ -291,7 +301,8 @@ class Customer_manageController extends Controller
         return view('customer.debt', compact('debts'));
     }
 
-    public function getContract($id){
+    public function getContract($id)
+    {
         $contract = Contract::find($id);
 
         return response()->json([
@@ -299,17 +310,18 @@ class Customer_manageController extends Controller
         ], 200);
     }
 
-    public function updateContract(Request $request, $id){
+    public function updateContract(Request $request, $id)
+    {
         $request->validate([
             'date' => 'required',
             'contract_code' => 'required',
         ]);
-        $advance_money_request = $request->advance_money ? preg_replace('/\D/', '', $request->advance_money): 0;
+        $advance_money_request = $request->advance_money ? preg_replace('/\D/', '', $request->advance_money) : 0;
         $contract = Contract::find($id);
 
         $advance_money = $advance_money_request + $contract->advance_money;
 
-        if ($advance_money > $contract->contract_value){
+        if ($advance_money > $contract->contract_value) {
             return redirect()->back()->with('error', 'Tổng số tiền tạm ứng đã lớn hơn giá trị hợp đồng');
         }
 
@@ -322,10 +334,11 @@ class Customer_manageController extends Controller
 
         return redirect()->back()->with('success', 'Chỉnh sửa hợp đồng thành công');
     }
-    public function businessStatistics(Request $request){
+    public function businessStatistics(Request $request)
+    {
         $contractQuery = Contract::query();
 
-        if(Auth::user()->role_id == 5){
+        if (Auth::user()->role_id == 5) {
             $contractQuery->where('customer_id', Auth::user()->employee_id);
         }
 
@@ -334,12 +347,12 @@ class Customer_manageController extends Controller
 
         $previousStartDate = (clone $startDate)->subMonth();
 
-        $previousStatistics =(clone $contractQuery)->select(
+        $previousStatistics = (clone $contractQuery)->select(
             DB::raw('SUM(contract_value) as total_contract_value'),
             DB::raw('SUM(advance_money) as advance_money'),
             DB::raw('SUM(contract_value - advance_money) as debt'),
         )->whereBetween('date', [$previousStartDate, $startDate])
-        ->get();
+            ->get();
 
         $contractQuery->whereBetween('date', [$startDate, $endDate]);
 
@@ -354,9 +367,324 @@ class Customer_manageController extends Controller
             DB::raw('SUM(contract_value - advance_money) as debt'),
             DB::raw('date')
         )
-        ->groupby(DB::raw('date'))
-        ->get();
+            ->groupby(DB::raw('date'))
+            ->get();
 
         return view('customer.businessStatistics', compact('contractStatistics', 'totalStatistics', 'previousStatistics'));
+    }
+
+    public function BusinessCustomerStatistics(Request $request)
+    {
+        $now = now();
+        $type = $request->type ?? 'month';
+
+        $response = [
+            'statistics' => collect(),
+            'current' => [
+                'new_customers' => 0,
+                'returning_customers' => 0,
+                'total' => 0
+            ],
+            'previous' => [
+                'new_customers' => 0,
+                'returning_customers' => 0,
+                'total' => 0
+            ],
+            'comparison' => [
+                'new_customers' => [
+                    'difference' => 0,
+                    'percentage' => 0,
+                    'status' => 'equal'
+                ],
+                'returning_customers' => [
+                    'difference' => 0,
+                    'percentage' => 0,
+                    'status' => 'equal'
+                ],
+                'total' => [
+                    'difference' => 0,
+                    'percentage' => 0,
+                    'status' => 'equal'
+                ]
+            ]
+        ];
+
+        switch ($type) {
+            case 'day':
+                $response = $this->getDayStatistics($now, $request);
+                break;
+
+            case 'month':
+                $response = $this->getMonthStatistics($now, $request);
+                break;
+
+            case 'year':
+                $response = $this->getYearStatistics($now);
+                break;
+
+            default:
+                $response = $this->getMonthStatistics($now, $request);
+                break;
+        }
+
+        return response()->json($response);
+    }
+
+    private function getDayStatistics($now, $request)
+    {
+        // Thống kê cho ngày hiện tại
+        $currentStats = $this->getContractStatsByDate($now->format('Y-m-d'));
+
+        // Thống kê cho ngày trước đó
+        $previousStats = $this->getContractStatsByDate($now->copy()->subDay()->format('Y-m-d'));
+
+        // Lấy dữ liệu cho cả tháng (nếu có tham số month)
+        $month = $request->month
+            ? Carbon::createFromFormat('Y-m', $request->month)->format('m')
+            : $now->format('m');
+        $year = $request->month
+            ? Carbon::createFromFormat('Y-m', $request->month)->format('Y')
+            : $now->format('Y');
+
+        $statistics = DB::table('contracts')
+            ->join('customers', 'contracts.customer_id', '=', 'customers.id')
+            ->selectRaw('
+            DATE(contracts.date) as date,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count = 1 THEN contracts.customer_id END) as new_customers,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count > 1 THEN contracts.customer_id END) as returning_customers,
+            COUNT(DISTINCT contracts.customer_id) as total_customers
+        ')
+            ->joinSub(
+                DB::table('contracts')
+                    ->selectRaw('customer_id, COUNT(*) as contract_count')
+                    ->groupBy('customer_id'),
+                'customer_contract_counts',
+                'contracts.customer_id',
+                '=',
+                'customer_contract_counts.customer_id'
+            )
+            ->where('customers.type', 1)
+            ->whereMonth('contracts.date', $month)
+            ->whereYear('contracts.date', $year)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return [
+            'statistics' => $statistics,
+            'current' => $currentStats,
+            'previous' => $previousStats,
+            'comparison' => $this->calculateDetailedComparison($currentStats, $previousStats)
+        ];
+    }
+
+    private function getMonthStatistics($now, $request)
+    {
+        // Thống kê cho tháng hiện tại
+        $currentStats = $this->getContractStatsByMonth($now->format('Y'), $now->format('m'));
+
+        // Thống kê cho tháng trước
+        $lastMonth = $now->copy()->subMonth();
+        $previousStats = $this->getContractStatsByMonth($lastMonth->format('Y'), $lastMonth->format('m'));
+
+        // Lấy dữ liệu cho cả năm
+        $year = $request->year
+            ? Carbon::createFromFormat('Y', $request->year)->format('Y')
+            : $now->format('Y');
+
+        $statistics = DB::table('contracts')
+            ->join('customers', 'contracts.customer_id', '=', 'customers.id')
+            ->selectRaw('
+            YEAR(contracts.date) as year,
+            MONTH(contracts.date) as month,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count = 1 THEN contracts.customer_id END) as new_customers,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count > 1 THEN contracts.customer_id END) as returning_customers,
+            COUNT(DISTINCT contracts.customer_id) as total_customers
+        ')
+            ->joinSub(
+                DB::table('contracts')
+                    ->selectRaw('customer_id, COUNT(*) as contract_count')
+                    ->groupBy('customer_id'),
+                'customer_contract_counts',
+                'contracts.customer_id',
+                '=',
+                'customer_contract_counts.customer_id'
+            )
+            ->where('customers.type', 1)
+            ->whereYear('contracts.date', $year)
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->limit(12)
+            ->get()
+            ->map(function ($item) {
+                $item->label = sprintf('%02d/%d', $item->month, $item->year);
+                $item->date = Carbon::createFromDate($item->year, $item->month, 1)->format('Y-m');
+                return $item;
+            });
+
+        return [
+            'statistics' => $statistics,
+            'current' => $currentStats,
+            'previous' => $previousStats,
+            'comparison' => $this->calculateDetailedComparison($currentStats, $previousStats),
+        ];
+    }
+
+    private function getYearStatistics($now)
+    {
+        $currentStats = $this->getContractStatsByYear($now->format('Y'));
+
+        $previousStats = $this->getContractStatsByYear($now->copy()->subYear()->format('Y'));
+
+        $statistics = DB::table('contracts')
+            ->join('customers', 'contracts.customer_id', '=', 'customers.id')
+            ->selectRaw('
+            YEAR(contracts.date) as year,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count = 1 THEN contracts.customer_id END) as new_customers,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count > 1 THEN contracts.customer_id END) as returning_customers,
+            COUNT(DISTINCT contracts.customer_id) as total_customers
+        ')
+            ->joinSub(
+                DB::table('contracts')
+                    ->selectRaw('customer_id, COUNT(*) as contract_count')
+                    ->groupBy('customer_id'),
+                'customer_contract_counts',
+                'contracts.customer_id',
+                '=',
+                'customer_contract_counts.customer_id'
+            )
+            ->where('customers.type', 1)
+            ->groupBy('year')
+            ->orderBy('year')
+            ->get();
+
+        return [
+            'statistics' => $statistics,
+            'current' => $currentStats,
+            'previous' => $previousStats,
+            'comparison' => $this->calculateDetailedComparison($currentStats, $previousStats),
+        ];
+    }
+
+    private function getContractStatsByDate($date)
+    {
+        $stats = DB::table('contracts')
+            ->join('customers', 'contracts.customer_id', '=', 'customers.id')
+            ->selectRaw('
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count = 1 THEN contracts.customer_id END) as new_customers,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count > 1 THEN contracts.customer_id END) as returning_customers,
+            COUNT(DISTINCT contracts.customer_id) as total_customers
+        ')
+            ->joinSub(
+                DB::table('contracts')
+                    ->selectRaw('customer_id, COUNT(*) as contract_count')
+                    ->groupBy('customer_id'),
+                'customer_contract_counts',
+                'contracts.customer_id',
+                '=',
+                'customer_contract_counts.customer_id'
+            )
+            ->where('customers.type', 1)
+            ->whereDate('contracts.date', $date)
+            ->first();
+
+        return [
+            'new_customers' => $stats->new_customers ?? 0,
+            'returning_customers' => $stats->returning_customers ?? 0,
+            'total' => $stats->total_customers ?? 0,
+        ];
+    }
+
+    private function getContractStatsByMonth($year, $month)
+    {
+        $stats = DB::table('contracts')
+            ->join('customers', 'contracts.customer_id', '=', 'customers.id')
+            ->selectRaw('
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count = 1 THEN contracts.customer_id END) as new_customers,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count > 1 THEN contracts.customer_id END) as returning_customers,
+            COUNT(DISTINCT contracts.customer_id) as total_customers
+        ')
+            ->joinSub(
+                DB::table('contracts')
+                    ->selectRaw('customer_id, COUNT(*) as contract_count')
+                    ->groupBy('customer_id'),
+                'customer_contract_counts',
+                'contracts.customer_id',
+                '=',
+                'customer_contract_counts.customer_id'
+            )
+            ->where('customers.type', 1)
+            ->whereYear('contracts.date', $year)
+            ->whereMonth('contracts.date', $month)
+            ->first();
+
+        return [
+            'new_customers' => $stats->new_customers ?? 0,
+            'returning_customers' => $stats->returning_customers ?? 0,
+            'total' => $stats->total_customers ?? 0,
+        ];
+    }
+
+    private function getContractStatsByYear($year)
+    {
+        $stats = DB::table('contracts')
+            ->join('customers', 'contracts.customer_id', '=', 'customers.id')
+            ->selectRaw('
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count = 1 THEN contracts.customer_id END) as new_customers,
+            COUNT(DISTINCT CASE WHEN customer_contract_counts.contract_count > 1 THEN contracts.customer_id END) as returning_customers,
+            COUNT(DISTINCT contracts.customer_id) as total_customers
+        ')
+            ->joinSub(
+                DB::table('contracts')
+                    ->selectRaw('customer_id, COUNT(*) as contract_count')
+                    ->groupBy('customer_id'),
+                'customer_contract_counts',
+                'contracts.customer_id',
+                '=',
+                'customer_contract_counts.customer_id'
+            )
+            ->where('customers.type', 1)
+            ->whereYear('contracts.date', $year)
+            ->first();
+
+        return [
+            'new_customers' => $stats->new_customers ?? 0,
+            'returning_customers' => $stats->returning_customers ?? 0,
+            'total' => $stats->total_customers ?? 0,
+        ];
+    }
+
+    private function calculateDetailedComparison($current, $previous)
+    {
+        return [
+            'new_customers' => $this->calculateComparison($current['new_customers'], $previous['new_customers']),
+            'returning_customers' => $this->calculateComparison($current['returning_customers'], $previous['returning_customers']),
+        ];
+    }
+
+    private function calculateComparison($current, $previous)
+    {
+        $difference = $current - $previous;
+        $percentage = 0;
+        $status = 'equal';
+
+        if ($previous > 0) {
+            $percentage = round(($difference / $previous) * 100, 2);
+        } elseif ($current > 0) {
+            $percentage = 100; // Tăng 100% nếu từ 0 lên số dương
+        }
+
+        if ($difference > 0) {
+            $status = 'increase';
+        } elseif ($difference < 0) {
+            $status = 'decrease';
+        }
+
+        return [
+            'difference' => $difference,
+            'percentage' => $percentage,
+            'status' => $status,
+        ];
     }
 }

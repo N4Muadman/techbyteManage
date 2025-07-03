@@ -101,7 +101,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <p class="text-center">không có khách hàng nào</p>
+                                        <td colspan="10"><p class="text-center">không có khách hàng nào</p></td>
                                     </tr>
                                 @endforelse
                             </tbody>
